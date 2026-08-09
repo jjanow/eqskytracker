@@ -1,0 +1,11 @@
+Location	Name	ID	Count	Slots
+Any Slot	Belt of the Four Winds	11673	1	10
+General 1	Fangol	99001	1	10
+General 1-Slot1	Empty	0	0	0
+General 2	Spiroc Wingblade +2	20679	1	10
+General 2-Slot7	Spiroc Wingblade (Exaltation)	20679	1	10
+General 3	Djinni War Blade	20700	1	10
+General 4	Fine Belt Buckle	20701	1	10
+
+KeyRing	Name	ID
+Equipment	Mask of Song	177843

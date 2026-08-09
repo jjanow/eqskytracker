@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eqskytracker"
+version = "0.1.0"
+description = "Track Plane of Sky class-unlock progress from EverQuest-style /outputfile dumps"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+eqskytracker = "eqskytracker.cli:main"
+
+[tool.setuptools]
+packages = ["eqskytracker"]
+
+[tool.setuptools.package-data]
+eqskytracker = ["data/*.json"]
