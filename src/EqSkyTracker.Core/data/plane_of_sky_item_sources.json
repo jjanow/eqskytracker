@@ -40,7 +40,7 @@
       "class": "Bard",
       "npc": "Cilin Spellsinger",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Glowing Diamond (7-SotS), Efreeti War Horn plus Wind Rune Fana to Cilin Spellsinger to complete 'Bard Test of Brass' (reward: Denon's Horn of Disaster).",
+      "how_to_obtain": "Turn in Glowing Diamond (7-SotS), Efreeti War Horn (Noble Dojorn/Overseer of Air/The Hand of Veeshan) plus Wind Rune Fana to Cilin Spellsinger to complete 'Bard Test of Brass' (reward: Denon's Horn of Disaster).",
       "wiki_reward_name": "Denon's Horn of Disaster",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -49,7 +49,7 @@
       "class": "Bard",
       "npc": "Cilin Spellsinger",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Nebulous Diamond (8-EoV), Efreeti War Spear plus Wind Rune Heda to Cilin Spellsinger to complete 'Bard Test of Harmony' (reward: Spear of Harmony).",
+      "how_to_obtain": "Turn in Nebulous Diamond (8-EoV), Efreeti War Spear (Noble Dojorn/Overseer of Air) plus Wind Rune Heda to Cilin Spellsinger to complete 'Bard Test of Harmony' (reward: Spear of Harmony).",
       "wiki_reward_name": "Spear of Harmony",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -58,7 +58,7 @@
       "class": "Beastlord",
       "npc": "Animist Kratho",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Sphinx Claw (7-SotS), Mithril Bands (8-EoV), Brass Knuckles plus Wind Rune Izah to Animist Kratho to complete 'Beastlord Test of Claw' (reward: Windhowl, Spirit Render).",
+      "how_to_obtain": "Turn in Sphinx Claw (7-SotS), Mithril Bands (8-EoV), Brass Knuckles (Noble Dojorn/Overseer of Air/The Hand of Veeshan) plus Wind Rune Izah to Animist Kratho to complete 'Beastlord Test of Claw' (reward: Windhowl, Spirit Render).",
       "wiki_reward_name": [
         "Windhowl",
         "Spirit Render"
@@ -108,7 +108,7 @@
       "class": "Berserker",
       "npc": "Stragen The Hewer",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Djinni War Blade (7-SotS), Efreeti Standard plus Wind Rune Jaka to Stragen The Hewer to complete 'Berserker Test of Sharpness' (reward: Skycleaver).",
+      "how_to_obtain": "Turn in Djinni War Blade (7-SotS), Efreeti Standard (Noble Dojorn) plus Wind Rune Jaka to Stragen The Hewer to complete 'Berserker Test of Sharpness' (reward: Skycleaver).",
       "wiki_reward_name": "Skycleaver",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -117,7 +117,7 @@
       "class": "Berserker",
       "npc": "Stragen The Hewer",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Jester's Mask (4-KoS), Efreeti Great Staff plus Wind Rune Dena to Stragen The Hewer to complete 'Berserker Test of Fools Errand' (reward: Cudgel of the Fool).",
+      "how_to_obtain": "Turn in Jester's Mask (4-KoS), Efreeti Great Staff (Eye of Veeshan/Noble Dojorn) plus Wind Rune Dena to Stragen The Hewer to complete 'Berserker Test of Fools Errand' (reward: Cudgel of the Fool).",
       "wiki_reward_name": "Cudgel of the Fool",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -198,7 +198,7 @@
       "class": "Cleric",
       "npc": "Josin Faithbringer",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Djinni Aura (7-SotS), Efreeti Mace plus Wind Rune Kala to Josin Faithbringer to complete 'Cleric Test of Theurgy' (reward: Theurgist's Star).",
+      "how_to_obtain": "Turn in Djinni Aura (7-SotS), Efreeti Mace (Noble Dojorn/Overseer of Air) plus Wind Rune Kala to Josin Faithbringer to complete 'Cleric Test of Theurgy' (reward: Theurgist's Star).",
       "wiki_reward_name": "Theurgist's Star",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -207,7 +207,7 @@
       "class": "Cleric",
       "npc": "Josin Faithbringer",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Mithril Bands (8-EoV), Efreeti Standard plus Wind Rune Ena to Josin Faithbringer to complete 'Cleric Test of The Weak' (reward: Baton of the Sky).",
+      "how_to_obtain": "Turn in Mithril Bands (8-EoV), Efreeti Standard (Noble Dojorn) plus Wind Rune Ena to Josin Faithbringer to complete 'Cleric Test of The Weak' (reward: Baton of the Sky).",
       "wiki_reward_name": "Baton of the Sky",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -225,7 +225,7 @@
       "class": "Druid",
       "npc": "Strandar Pinemist",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Spiroc Battle Staff (5-SL), Efreeti Statuette plus Wind Rune Azia to Strandar Pinemist to complete 'Druid Test of Tree' (reward: Shillelagh).",
+      "how_to_obtain": "Turn in Spiroc Battle Staff (5-SL), Efreeti Statuette (Noble Dojorn/Overseer of Air/The Hand of Veeshan) plus Wind Rune Azia to Strandar Pinemist to complete 'Druid Test of Tree' (reward: Shillelagh).",
       "wiki_reward_name": "Shillelagh",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -234,7 +234,7 @@
       "class": "Druid",
       "npc": "Strandar Pinemist",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Storm Sky Opal (8-EoV), Efreeti Scimitar plus Wind Rune Izah to Strandar Pinemist to complete 'Druid Test of Nature' (reward: Espri).",
+      "how_to_obtain": "Turn in Storm Sky Opal (8-EoV), Efreeti Scimitar (Noble Dojorn/Overseer of Air) plus Wind Rune Izah to Strandar Pinemist to complete 'Druid Test of Nature' (reward: Espri).",
       "wiki_reward_name": "Espri",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -297,7 +297,7 @@
       "class": "Enchanter",
       "npc": "Enchanter Jolas",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Large Sky Sapphire (8-EoV), Efreeti Wind Staff plus Wind Rune Izah to Enchanter Jolas to complete 'Enchanter Test of Incapacitation' (reward: Rod of the Protecting Winds).",
+      "how_to_obtain": "Turn in Large Sky Sapphire (8-EoV), Efreeti Wind Staff (Noble Dojorn/The Hand of Veeshan) plus Wind Rune Izah to Enchanter Jolas to complete 'Enchanter Test of Incapacitation' (reward: Rod of the Protecting Winds).",
       "wiki_reward_name": "Rod of the Protecting Winds",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -351,7 +351,7 @@
       "class": "Magician",
       "npc": "Magus Frinon",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Hazy Opal (8-EoV), Efreeti Magi Staff plus Wind Rune Jaka to Magus Frinon to complete 'Magician Test of Gesticulation' (reward: Staff of The Magister).",
+      "how_to_obtain": "Turn in Hazy Opal (8-EoV), Efreeti Magi Staff (Noble Dojorn/Overseer of Air) plus Wind Rune Jaka to Magus Frinon to complete 'Magician Test of Gesticulation' (reward: Staff of The Magister).",
       "wiki_reward_name": "Staff of The Magister",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true,
@@ -433,7 +433,7 @@
       "class": "Monk",
       "npc": "Holwin",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Nebulous Sapphire (7-SotS), Brass Knuckles plus Wind Rune Neza to Holwin to complete 'Monk Test of Fists' (reward: Wu's Fist of Mastery).",
+      "how_to_obtain": "Turn in Nebulous Sapphire (7-SotS), Brass Knuckles (Noble Dojorn/Overseer of Air/The Hand of Veeshan) plus Wind Rune Neza to Holwin to complete 'Monk Test of Fists' (reward: Wu's Fist of Mastery).",
       "wiki_reward_name": "Wu's Fist of Mastery",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -442,7 +442,7 @@
       "class": "Necromancer",
       "npc": "Drakis Bloodcaster",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Gorgon Head (3-Gorga), Efreeti Great Staff plus Wind Rune Fana to Drakis Bloodcaster to complete 'Necromancer Test of Hands' (reward: Gorgon Head Staff).",
+      "how_to_obtain": "Turn in Gorgon Head (3-Gorga), Efreeti Great Staff (Eye of Veeshan/Noble Dojorn) plus Wind Rune Fana to Drakis Bloodcaster to complete 'Necromancer Test of Hands' (reward: Gorgon Head Staff).",
       "wiki_reward_name": "Gorgon Head Staff",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -505,7 +505,7 @@
       "class": "Paladin",
       "npc": "Dason Goldblade",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Large Sky Diamond (8-EoV), Efreeti Zweihander plus Wind Rune Izah to Dason Goldblade to complete 'Paladin Test of Compassion' (reward: Truvinan).",
+      "how_to_obtain": "Turn in Large Sky Diamond (8-EoV), Efreeti Zweihander (Noble Dojorn/Overseer of Air) plus Wind Rune Izah to Dason Goldblade to complete 'Paladin Test of Compassion' (reward: Truvinan).",
       "wiki_reward_name": "Truvinan",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -523,7 +523,7 @@
       "class": "Paladin",
       "npc": "Dason Goldblade",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Golden Hilt (7), Sphinx Claw (7-SotS) plus Wind Rune Geza to Dason Goldblade to complete 'Paladin Test of Love' (reward: Thelvorn, Blade of Light).",
+      "how_to_obtain": "Turn in Golden Hilt (7-SotS), Sphinx Claw (7-SotS) plus Wind Rune Geza to Dason Goldblade to complete 'Paladin Test of Love' (reward: Thelvorn, Blade of Light).",
       "wiki_reward_name": "Thelvorn, Blade of Light",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -541,7 +541,7 @@
       "class": "Ranger",
       "npc": "Ranger Spirit",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Shimmering Pearl (8-EoV), Efreeti War Bow plus Wind Rune Heda to Ranger Spirit to complete 'Ranger Test of Ranged Attack' (reward: Windstriker).",
+      "how_to_obtain": "Turn in Shimmering Pearl (8-EoV), Efreeti War Bow (Noble Dojorn/Overseer of Air/The Hand of Veeshan) plus Wind Rune Heda to Ranger Spirit to complete 'Ranger Test of Ranged Attack' (reward: Windstriker).",
       "wiki_reward_name": "Windstriker",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -568,7 +568,7 @@
       "class": "Ranger",
       "npc": "Ranger Spirit",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Circlet of Brambles (7-SotS), Efreeti Long Sword plus Wind Rune Ena to Ranger Spirit to complete 'Ranger Test of Blade' (reward: Arydryidriyorn).",
+      "how_to_obtain": "Turn in Circlet of Brambles (7-SotS), Efreeti Long Sword (Noble Dojorn) plus Wind Rune Ena to Ranger Spirit to complete 'Ranger Test of Blade' (reward: Arydryidriyorn).",
       "wiki_reward_name": "Arydryidriyorn",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -660,7 +660,7 @@
       "class": "Shadow Knight",
       "npc": "Sarkis Ebonblade",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Efreeti War Shield plus Wind Rune Heda to Sarkis Ebonblade to complete 'Shadow Knight Test of Envenoming' (reward: Obtenebrate Mithril Guard).",
+      "how_to_obtain": "Turn in Efreeti War Shield (Noble Dojorn/Overseer of Air) plus Wind Rune Heda to Sarkis Ebonblade to complete 'Shadow Knight Test of Envenoming' (reward: Obtenebrate Mithril Guard).",
       "wiki_reward_name": "Obtenebrate Mithril Guard",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -696,7 +696,7 @@
       "class": "Shadow Knight",
       "npc": "Sarkis Ebonblade",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Blood Sky Ruby (8-EoV), Efreeti War Axe plus Wind Rune Kala to Sarkis Ebonblade to complete 'Shadow Knight Test of Necropotence' (reward: Khyldorn the Blood Drinker).",
+      "how_to_obtain": "Turn in Blood Sky Ruby (8-EoV), Efreeti War Axe (Noble Dojorn/Overseer of Air) plus Wind Rune Kala to Sarkis Ebonblade to complete 'Shadow Knight Test of Necropotence' (reward: Khyldorn the Blood Drinker).",
       "wiki_reward_name": "Khyldorn the Blood Drinker",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -732,7 +732,7 @@
       "class": "Shaman",
       "npc": "Medicine Man Veetra",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Corrosive Venom (6-BZ), Efreeti War Club plus Wind Rune Ena to Medicine Man Veetra to complete 'Shaman Test of Shrink' (reward: Warhammer of the Wind).",
+      "how_to_obtain": "Turn in Corrosive Venom (6-BZ), Efreeti War Club (Noble Dojorn) plus Wind Rune Ena to Medicine Man Veetra to complete 'Shaman Test of Shrink' (reward: Warhammer of the Wind).",
       "wiki_reward_name": "Warhammer of the Wind",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -741,7 +741,7 @@
       "class": "Shaman",
       "npc": "Medicine Man Veetra",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Bixie Essence, Spiritualist`s Ring (7-SotS) plus Wind Rune Heda to Medicine Man Veetra to complete 'Shaman Test of Snake' (reward: Vermilion Sky Ring).",
+      "how_to_obtain": "Turn in Bixie Essence (6-BZ), Spiritualist`s Ring (7-SotS) plus Wind Rune Heda to Medicine Man Veetra to complete 'Shaman Test of Snake' (reward: Vermilion Sky Ring).",
       "wiki_reward_name": "Vermilion Sky Ring",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -750,7 +750,7 @@
       "class": "Shaman",
       "npc": "Medicine Man Veetra",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Symbol of Veeshan (8-EoV), Efreeti War Maul plus Wind Rune Geza to Medicine Man Veetra to complete 'Shaman Test of The Witch Doctor' (reward: Garduk).",
+      "how_to_obtain": "Turn in Symbol of Veeshan (8-EoV), Efreeti War Maul (Noble Dojorn/Overseer of Air) plus Wind Rune Geza to Medicine Man Veetra to complete 'Shaman Test of The Witch Doctor' (reward: Garduk).",
       "wiki_reward_name": "Garduk",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -768,7 +768,7 @@
       "class": "Warrior",
       "npc": "Torgon Blademaster",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Ethereal Emerald (8-EoV), Efreeti Battle Axe plus Wind Rune Dena to Torgon Blademaster to complete 'Warrior Test of Bash' (reward: Fangol).",
+      "how_to_obtain": "Turn in Ethereal Emerald (8-EoV), Efreeti Battle Axe (Noble Dojorn/Overseer of Air) plus Wind Rune Dena to Torgon Blademaster to complete 'Warrior Test of Bash' (reward: Fangol).",
       "wiki_reward_name": "Fangol",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -804,7 +804,7 @@
       "class": "Warrior",
       "npc": "Torgon Blademaster",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Wind Tablet (6-BZ), Efreeti Belt plus Wind Rune Fana to Torgon Blademaster to complete 'Warrior Test of Think' (reward: Belt of the Four Winds).",
+      "how_to_obtain": "Turn in Wind Tablet (6-BZ), Efreeti Belt (Noble Dojorn/The Hand of Veeshan) plus Wind Rune Fana to Torgon Blademaster to complete 'Warrior Test of Think' (reward: Belt of the Four Winds).",
       "wiki_reward_name": "Belt of the Four Winds",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -831,7 +831,7 @@
       "class": "Wizard",
       "npc": "Wizard Schrock",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Large Sky Lapis (8-EoV), Efreeti War Staff plus Wind Rune Caza to Wizard Schrock to complete 'Wizard Test of Preparation' (reward: Nargon's Staff).",
+      "how_to_obtain": "Turn in Large Sky Lapis (8-EoV), Efreeti War Staff (The Hand of Veeshan/Noble Dojorn/Overseer of Air) plus Wind Rune Caza to Wizard Schrock to complete 'Wizard Test of Preparation' (reward: Nargon's Staff).",
       "wiki_reward_name": "Nargon's Staff",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
@@ -840,7 +840,7 @@
       "class": "Wizard",
       "npc": "Wizard Schrock",
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
-      "how_to_obtain": "Turn in Box of Winds (6-BZ), Efreeti Statuette plus Wind Rune Izah to Wizard Schrock to complete 'Wizard Test of Conception' (reward: Solidate Mithril Ring).",
+      "how_to_obtain": "Turn in Box of Winds (6-BZ), Efreeti Statuette (Noble Dojorn/Overseer of Air/The Hand of Veeshan) plus Wind Rune Izah to Wizard Schrock to complete 'Wizard Test of Conception' (reward: Solidate Mithril Ring).",
       "wiki_reward_name": "Solidate Mithril Ring",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true

@@ -21,11 +21,14 @@ public static partial class Components
     [GeneratedRegex(@"\s*\([^()]*\)\s*$")]
     private static partial Regex TagSuffixRegex();
 
-    [GeneratedRegex(@"\((\d+-[A-Za-z]+)\)")]
-    private static partial Regex IslandTagRegex();
+    // Not just the numbered-island shape ("7-SotS") -- some components (e.g.
+    // Efreeti-prefixed weapons) aren't tied to an island at all, and instead
+    // carry a plain wiki-sourced note like "(Noble Dojorn/Overseer of Air)".
+    [GeneratedRegex(@"\(([^()]+)\)")]
+    private static partial Regex SourceTagRegex();
 
     /// <summary>
-    /// Extract turn-in component item names (island-tag parentheticals
+    /// Extract turn-in component item names (source-tag parentheticals
     /// stripped) from a hint's how_to_obtain text. Returns [] if the text
     /// doesn't match the expected sentence shape.
     /// </summary>
@@ -33,12 +36,24 @@ public static partial class Components
         [.. ParseComponentsWithTags(howToObtain).Select(c => c.Name)];
 
     /// <summary>
+    /// True if a parsed component name is a Wind Rune. Wind Runes live in an
+    /// alternate-currency window rather than bags/bank/keyring, so they never
+    /// appear in an "/outputfile inventory" dump and can't be cross-referenced
+    /// against a character's inventory -- callers that surface inventory-backed
+    /// tracking (missing-items lists, farmed-item management) should exclude them.
+    /// </summary>
+    public static bool IsWindRune(string componentName) =>
+        componentName.StartsWith("Wind Rune ", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
     /// Extract turn-in components from a hint's how_to_obtain text, pairing
-    /// each item name with its own island-tag parenthetical (e.g. 'Sphinx
-    /// Claw' -> "7-SotS"). Components without a tag in the text (e.g. Wind
-    /// Runes and NPC-purchased items) come back with a null tag -- that's
-    /// expected, not an error. Returns [] if the text doesn't match the
-    /// expected sentence shape.
+    /// each item name with its own source-tag parenthetical -- an island tag
+    /// (e.g. 'Sphinx Claw' -> "7-SotS") or, for components not tied to a
+    /// specific island, a plain wiki-sourced note (e.g. 'Efreeti War Axe' ->
+    /// "Noble Dojorn/Overseer of Air"). Components without any tag in the
+    /// text (e.g. Wind Runes and NPC-purchased items) come back with a null
+    /// tag -- that's expected, not an error. Returns [] if the text doesn't
+    /// match the expected sentence shape.
     /// </summary>
     public static List<(string Name, string? Tag)> ParseComponentsWithTags(string howToObtain)
     {
@@ -74,7 +89,7 @@ public static partial class Components
     private static (string Name, string? Tag) ParseNameAndTag(string raw)
     {
         raw = raw.Trim();
-        Match tagMatch = IslandTagRegex().Match(raw);
+        Match tagMatch = SourceTagRegex().Match(raw);
         string? tag = tagMatch.Success ? tagMatch.Groups[1].Value : null;
         string name = TagSuffixRegex().Replace(raw, "").Trim();
         return (name, tag);

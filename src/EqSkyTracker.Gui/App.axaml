@@ -53,6 +53,12 @@
         <Style Selector="TreeView">
             <Setter Property="Background" Value="{DynamicResource FieldBg}" />
         </Style>
+        <Style Selector="ScrollViewer">
+            <!-- Fluent's default overlay scrollbars shrink to a thin strip and hide
+                 when the pointer isn't over them, which makes them hard to grab and
+                 can eat wheel input near the edge. Keep them fully expanded always. -->
+            <Setter Property="AllowAutoHide" Value="False" />
+        </Style>
         <Style Selector="TreeViewItem">
             <Setter Property="Padding" Value="4,3" />
         </Style>

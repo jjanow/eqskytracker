@@ -50,4 +50,14 @@ public class ParseComponentsWithTagsTests
     {
         Assert.Empty(Components.ParseComponentsWithTags("Turn in a Test Component to Test NPC."));
     }
+
+    [Fact]
+    public void NonIslandSourceNoteIsCapturedAsATag()
+    {
+        // Components not tied to a numbered island (e.g. Efreeti-prefixed
+        // trash drops) carry a plain wiki-sourced note instead of an island tag.
+        const string text = "Turn in Ethereal Emerald (8-EoV), Efreeti Battle Axe (Noble Dojorn/Overseer of Air) plus Wind Rune Dena to Torgon Blademaster to complete 'Warrior Test of Bash' (reward: Fangol).";
+        List<(string Name, string? Tag)> result = Components.ParseComponentsWithTags(text);
+        Assert.Contains(("Efreeti Battle Axe", "Noble Dojorn/Overseer of Air"), result);
+    }
 }

@@ -48,7 +48,7 @@
             </TabItem>
             <TabItem Header="All Missing Items">
                 <DataGrid Name="MissingGrid" AutoGenerateColumns="False" IsReadOnly="True"
-                          CanUserSortColumns="True" GridLinesVisibility="Horizontal">
+                          CanUserSortColumns="True" CanUserResizeColumns="True" GridLinesVisibility="Horizontal">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="Item" SortMemberPath="Item" Width="2*">
                             <DataGridTemplateColumn.CellTemplate>

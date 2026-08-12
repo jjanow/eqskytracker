@@ -34,7 +34,11 @@ public class MissingComponentStatus
 {
     public required string Name { get; init; }
 
-    /// <summary>Island tag as the wiki shows it (e.g. "7-SotS"); "" if the component has none.</summary>
+    /// <summary>
+    /// Source tag as the wiki shows it -- an island tag (e.g. "7-SotS") or,
+    /// for components not tied to an island, a plain drop-source note (e.g.
+    /// "Noble Dojorn/Overseer of Air"); "" if the component has none.
+    /// </summary>
     public required string Source { get; init; }
 
     /// <summary>Reward item names still incomplete that need this component.</summary>
@@ -155,6 +159,10 @@ public static class Report
                 }
                 foreach ((string name, string? tag) in Components.ParseComponentsWithTags(howToObtain))
                 {
+                    if (Components.IsWindRune(name))
+                    {
+                        continue;
+                    }
                     if (!components.TryGetValue(name, out (string Name, string? Tag, List<string> Consumers) entry))
                     {
                         entry = (name, tag, []);
@@ -204,6 +212,10 @@ public static class Report
                 }
                 foreach (string component in Components.ParseComponents(howToObtain))
                 {
+                    if (Components.IsWindRune(component))
+                    {
+                        continue;
+                    }
                     if (!componentTargets.TryGetValue(component, out List<(string, bool)>? list))
                     {
                         list = [];

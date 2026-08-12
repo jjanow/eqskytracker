@@ -114,11 +114,29 @@ public class ReportTests
     [Fact]
     public void ComponentWithNoTagComesBackBlank()
     {
-        // "Wind Rune Jaka" is a plus-clause Wind Rune -- it never carries an
+        // "Shiny Trinket" is a plus-clause component -- it never carries an
         // island-tag parenthetical in the source text.
         CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
-        MissingComponentStatus rune = report.MissingComponents.First(c => c.Name == "Wind Rune Jaka");
-        Assert.Equal("", rune.Source);
+        MissingComponentStatus trinket = report.MissingComponents.First(c => c.Name == "Shiny Trinket");
+        Assert.Equal("", trinket.Source);
+    }
+
+    [Fact]
+    public void WindRunesExcludedFromMissingComponents()
+    {
+        // "Wind Rune Jaka" is named by the still-incomplete "Fangol and Spirit
+        // Blade" reward, but Wind Runes live in an alternate-currency window
+        // and never show up in an inventory dump, so they're excluded from the
+        // trackable missing-items list entirely.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        Assert.DoesNotContain(report.MissingComponents, c => c.Name.StartsWith("Wind Rune", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void WindRunesExcludedFromFarmedItems()
+    {
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        Assert.DoesNotContain(report.FarmedItems, f => f.Name.StartsWith("Wind Rune", StringComparison.Ordinal));
     }
 
     [Fact]
