@@ -16,8 +16,6 @@ import platform
 from dataclasses import dataclass
 from pathlib import Path
 
-APP_NAME = "eqskytracker"
-
 
 @dataclass
 class Character:
@@ -27,14 +25,10 @@ class Character:
 
 
 def config_dir() -> Path:
-    system = platform.system()
-    if system == "Windows":
-        base = os.environ.get("APPDATA", str(Path.home() / "AppData" / "Roaming"))
-    elif system == "Darwin":
-        base = str(Path.home() / "Library" / "Application Support")
-    else:
-        base = os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))
-    return Path(base) / APP_NAME
+    """The app's own install/package directory -- config.json lives alongside
+    the source rather than under the user's home/profile, so the app is
+    self-contained and portable (e.g. on a USB stick or a shared machine)."""
+    return Path(__file__).resolve().parent
 
 
 def _config_file() -> Path:

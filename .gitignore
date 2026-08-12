@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+eqskytracker/config.json
 *.egg-info/
 build/
 dist/
