@@ -1,5 +1,59 @@
 {
   "item_sources": {
+    "Mask of Song": {
+      "class": "Bard",
+      "npc": "Cilin Spellsinger",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Light Woolen Mask (3-Gorga) plus Wind Rune Meda to Cilin Spellsinger to complete 'Bard Test of Tone' (reward: Mask of Song).",
+      "wiki_reward_name": "Mask of Song",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Mantle of the Songweaver": {
+      "class": "Bard",
+      "npc": "Cilin Spellsinger",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Light Woolen Mantle (4-KoS) plus Wind Rune Kala to Cilin Spellsinger to complete 'Bard Test of Voice' (reward: Mantle of the Songweaver).",
+      "wiki_reward_name": "Mantle of the Songweaver",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Ervaj's Flute of Flight": {
+      "class": "Bard",
+      "npc": "Cilin Spellsinger",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Crude Wooden Flute (5-SL) plus Wind Rune Azia to Cilin Spellsinger to complete 'Bard Test of Pitch' (reward: Ervaj's Flute of Flight).",
+      "wiki_reward_name": "Ervaj's Flute of Flight",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Fae Amulet": {
+      "class": "Bard",
+      "npc": "Cilin Spellsinger",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Amulet of Woven Hair (6-BZ) plus Wind Rune Caza to Cilin Spellsinger to complete 'Bard Test of Wind' (reward: Fae Amulet).",
+      "wiki_reward_name": "Fae Amulet",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Denon's Horn of Disaster": {
+      "class": "Bard",
+      "npc": "Cilin Spellsinger",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Glowing Diamond (7-SotS), Efreeti War Horn plus Wind Rune Fana to Cilin Spellsinger to complete 'Bard Test of Brass' (reward: Denon's Horn of Disaster).",
+      "wiki_reward_name": "Denon's Horn of Disaster",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Spear of Harmony": {
+      "class": "Bard",
+      "npc": "Cilin Spellsinger",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Nebulous Diamond (8-EoV), Efreeti War Spear plus Wind Rune Heda to Cilin Spellsinger to complete 'Bard Test of Harmony' (reward: Spear of Harmony).",
+      "wiki_reward_name": "Spear of Harmony",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
     "Windhowl and Spirit Render": {
       "class": "Beastlord",
       "npc": "Animist Kratho",
@@ -38,6 +92,15 @@
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
       "how_to_obtain": "Turn in Azarack Skin (2-PoS) plus Wind Rune Heda to Animist Kratho to complete 'Beastlord Test of Azarack' (reward: Azarack Skin Wristwraps).",
       "wiki_reward_name": "Azarack Skin Wristwraps",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Diaphonous Waistband": {
+      "class": "Beastlord",
+      "npc": "Animist Kratho",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Silken Wrap (6-BZ) plus Wind Rune Geza to Animist Kratho to complete 'Beastlord Test of Wind' (reward: Diaphonous Waistband).",
+      "wiki_reward_name": "Diaphonous Waistband",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
@@ -83,6 +146,15 @@
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
       "how_to_obtain": "Turn in Azarack Blood (2-PoS) plus Wind Rune Lena to Stragen The Hewer to complete 'Berserker Test of Blood' (reward: Blood-Drawn Runes).",
       "wiki_reward_name": "Blood-Drawn Runes",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Sash of Ferocity": {
+      "class": "Berserker",
+      "npc": "Stragen The Hewer",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in High Quality Raiment (5-SL) plus Wind Rune Ozah to Stragen The Hewer to complete 'Berserker Test of Ferocity' (reward: Sash of Ferocity).",
+      "wiki_reward_name": "Sash of Ferocity",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
@@ -185,6 +257,15 @@
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
+    "Nature Walker's Mantle": {
+      "class": "Druid",
+      "npc": "Strandar Pinemist",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Mantle of Woven Grass (4-KoS) plus Wind Rune Kala to Strandar Pinemist to complete 'Druid Test of Bear' (reward: Nature Walker's Mantle).",
+      "wiki_reward_name": "Nature Walker's Mantle",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
     "Ivory Mask": {
       "class": "Enchanter",
       "npc": "Enchanter Jolas",
@@ -218,6 +299,24 @@
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
       "how_to_obtain": "Turn in Large Sky Sapphire (8-EoV), Efreeti Wind Staff plus Wind Rune Izah to Enchanter Jolas to complete 'Enchanter Test of Incapacitation' (reward: Rod of the Protecting Winds).",
       "wiki_reward_name": "Rod of the Protecting Winds",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Sphinx Hair Cord": {
+      "class": "Enchanter",
+      "npc": "Enchanter Jolas",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Finely Woven Cloth Cord (3-Gorga) plus Wind Rune Meda to Enchanter Jolas to complete 'Enchanter Test of Illusion' (reward: Sphinx Hair Cord).",
+      "wiki_reward_name": "Sphinx Hair Cord",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Wind Walker's Mantle": {
+      "class": "Enchanter",
+      "npc": "Enchanter Jolas",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Light Cloth Mantle (4-KoS) plus Wind Rune Ozah to Enchanter Jolas to complete 'Enchanter Test of Metamorphism' (reward: Wind Walker's Mantle).",
+      "wiki_reward_name": "Wind Walker's Mantle",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
@@ -276,6 +375,15 @@
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
+    "Mask of Empowerment": {
+      "class": "Magician",
+      "npc": "Magus Frinon",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Ceramic Mask (4-KoS) plus Wind Rune Neza to Magus Frinon to complete 'Magician Test of Empowerment' (reward: Mask of Empowerment).",
+      "wiki_reward_name": "Mask of Empowerment",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
     "Sandals of Alacrity": {
       "class": "Monk",
       "npc": "Holwin",
@@ -312,6 +420,24 @@
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
+    "Ton Po's Eye Patch": {
+      "class": "Monk",
+      "npc": "Holwin",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Cracked Leather Eyepatch (4-KoS) plus Wind Rune Geza to Holwin to complete 'Monk Test of Sight' (reward: Ton Po's Eye Patch).",
+      "wiki_reward_name": "Ton Po's Eye Patch",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Wu's Fist of Mastery": {
+      "class": "Monk",
+      "npc": "Holwin",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Nebulous Sapphire (7-SotS), Brass Knuckles plus Wind Rune Neza to Holwin to complete 'Monk Test of Fists' (reward: Wu's Fist of Mastery).",
+      "wiki_reward_name": "Wu's Fist of Mastery",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
     "Gorgon Head Staff": {
       "class": "Necromancer",
       "npc": "Drakis Bloodcaster",
@@ -345,6 +471,24 @@
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
       "how_to_obtain": "Turn in Ring of Veeshan (7-SotS) plus Wind Rune Caza to Drakis Bloodcaster to complete 'Necromancer Test of Finger' (reward: Band of Wailing Winds).",
       "wiki_reward_name": "Band of Wailing Winds",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Cloak of Spiroc Feathers": {
+      "class": "Necromancer",
+      "npc": "Drakis Bloodcaster",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Black Silk Cape (4-KoS) plus Wind Rune Neza to Drakis Bloodcaster to complete 'Necromancer Test of Power' (reward: Cloak of Spiroc Feathers).",
+      "wiki_reward_name": "Cloak of Spiroc Feathers",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Bloodsoaked Raiment": {
+      "class": "Necromancer",
+      "npc": "Drakis Bloodcaster",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Fine Cloth Raiment (5-SL) plus Wind Rune Ozah to Drakis Bloodcaster to complete 'Necromancer Test of Mind' (reward: Bloodsoaked Raiment).",
+      "wiki_reward_name": "Bloodsoaked Raiment",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
@@ -426,6 +570,15 @@
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
       "how_to_obtain": "Turn in Circlet of Brambles (7-SotS), Efreeti Long Sword plus Wind Rune Ena to Ranger Spirit to complete 'Ranger Test of Blade' (reward: Arydryidriyorn).",
       "wiki_reward_name": "Arydryidriyorn",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Griffon Talon Necklace": {
+      "class": "Ranger",
+      "npc": "Ranger Spirit",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Griffon Talon (3-Gorga) plus Wind Rune Meda to Ranger Spirit to complete 'Ranger Test of Body' (reward: Griffon Talon Necklace).",
+      "wiki_reward_name": "Griffon Talon Necklace",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
@@ -548,6 +701,60 @@
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
+    "Amulet of the Fang": {
+      "class": "Shaman",
+      "npc": "Medicine Man Veetra",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Leather Cord (3-Gorga) plus Wind Rune Meda to Medicine Man Veetra to complete 'Shaman Test of Might' (reward: Amulet of the Fang).",
+      "wiki_reward_name": "Amulet of the Fang",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Bracelet of the Spirits": {
+      "class": "Shaman",
+      "npc": "Medicine Man Veetra",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Ceremonial Belt (5-SL) plus Wind Rune Kala to Medicine Man Veetra to complete 'Shaman Test of Health' (reward: Bracelet of the Spirits).",
+      "wiki_reward_name": "Bracelet of the Spirits",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Fairy-Hide Mantle": {
+      "class": "Shaman",
+      "npc": "Medicine Man Veetra",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Light Damask Mantle (5-SL) plus Wind Rune Beza to Medicine Man Veetra to complete 'Shaman Test of Sight' (reward: Fairy-Hide Mantle).",
+      "wiki_reward_name": "Fairy-Hide Mantle",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Warhammer of the Wind": {
+      "class": "Shaman",
+      "npc": "Medicine Man Veetra",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Corrosive Venom (6-BZ), Efreeti War Club plus Wind Rune Ena to Medicine Man Veetra to complete 'Shaman Test of Shrink' (reward: Warhammer of the Wind).",
+      "wiki_reward_name": "Warhammer of the Wind",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Vermilion Sky Ring": {
+      "class": "Shaman",
+      "npc": "Medicine Man Veetra",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Bixie Essence, Spiritualist`s Ring (7-SotS) plus Wind Rune Heda to Medicine Man Veetra to complete 'Shaman Test of Snake' (reward: Vermilion Sky Ring).",
+      "wiki_reward_name": "Vermilion Sky Ring",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Garduk": {
+      "class": "Shaman",
+      "npc": "Medicine Man Veetra",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Symbol of Veeshan (8-EoV), Efreeti War Maul plus Wind Rune Geza to Medicine Man Veetra to complete 'Shaman Test of The Witch Doctor' (reward: Garduk).",
+      "wiki_reward_name": "Garduk",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
     "Dagas": {
       "class": "Warrior",
       "npc": "Torgon Blademaster",
@@ -584,6 +791,24 @@
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     },
+    "Pauldrons of the Blue Sky": {
+      "class": "Warrior",
+      "npc": "Torgon Blademaster",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Spiroc Air Totem (5-SL) plus Wind Rune Beza to Torgon Blademaster to complete 'Warrior Test of Force' (reward: Pauldrons of the Blue Sky).",
+      "wiki_reward_name": "Pauldrons of the Blue Sky",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Belt of the Four Winds": {
+      "class": "Warrior",
+      "npc": "Torgon Blademaster",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Wind Tablet (6-BZ), Efreeti Belt plus Wind Rune Fana to Torgon Blademaster to complete 'Warrior Test of Think' (reward: Belt of the Four Winds).",
+      "wiki_reward_name": "Belt of the Four Winds",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
     "Augmentor's Mask": {
       "class": "Wizard",
       "npc": "Wizard Schrock",
@@ -617,6 +842,24 @@
       "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
       "how_to_obtain": "Turn in Box of Winds (6-BZ), Efreeti Statuette plus Wind Rune Izah to Wizard Schrock to complete 'Wizard Test of Conception' (reward: Solidate Mithril Ring).",
       "wiki_reward_name": "Solidate Mithril Ring",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Al`Kabor's Cap of Binding": {
+      "class": "Wizard",
+      "npc": "Wizard Schrock",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Woven Skull Cap (4-KoS) plus Wind Rune Fana to Wizard Schrock to complete 'Wizard Test of Focus' (reward: Al`Kabor's Cap of Binding).",
+      "wiki_reward_name": "Al`Kabor's Cap of Binding",
+      "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
+      "found": true
+    },
+    "Amulet of the Void": {
+      "class": "Wizard",
+      "npc": "Wizard Schrock",
+      "zone_or_island": "Plane of Sky; component item(s) sourced from the island tag(s) noted in requires (e.g. 3-Gorga, 4-KoS, 5-SL, 6-BZ, 7-SotS, 8-EoV \u2014 abbreviations only, full island names not given in source)",
+      "how_to_obtain": "Turn in Amethyst Amulet (7-SotS) plus Wind Rune Jaka to Wizard Schrock to complete 'Wizard Test of Visualization' (reward: Amulet of the Void).",
+      "wiki_reward_name": "Amulet of the Void",
       "source_url": "https://eqlwiki.com/index.php?title=Plane_of_Sky&action=raw",
       "found": true
     }
