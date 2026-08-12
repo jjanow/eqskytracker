@@ -7,15 +7,28 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
-from .discovery import candidate_dirs, find_all_characters, save_last_dir
-from .report import build_report, CharacterReport
+from .components import extract_island_tags
+from .discovery import (
+    candidate_dirs,
+    find_all_characters,
+    load_window_geometry,
+    save_last_dir,
+    save_window_geometry,
+)
+from .report import build_report, CharacterReport, ItemStatus
+
+DEFAULT_GEOMETRY = "900x600"
 
 
 class SkyTrackerApp(tk.Tk):
     def __init__(self, initial_dir: str | None = None):
         super().__init__()
         self.title("Plane of Sky Class Tracker")
-        self.geometry("900x600")
+        try:
+            self.geometry(load_window_geometry() or DEFAULT_GEOMETRY)
+        except tk.TclError:
+            self.geometry(DEFAULT_GEOMETRY)
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
 
         self.current_dir: Path | None = Path(initial_dir) if initial_dir else None
         self.characters: list = []
@@ -23,6 +36,14 @@ class SkyTrackerApp(tk.Tk):
 
         self._build_widgets()
         self._reload_characters()
+
+    def _on_close(self) -> None:
+        try:
+            if self.state() == "normal":
+                save_window_geometry(self.geometry())
+        except tk.TclError:
+            pass
+        self.destroy()
 
     # -- layout -----------------------------------------------------------
     def _build_widgets(self) -> None:
@@ -44,14 +65,39 @@ class SkyTrackerApp(tk.Tk):
         self.summary_label = ttk.Label(self, text="", font=("", 12, "bold"), padding=(8, 4))
         self.summary_label.pack(fill="x")
 
-        self.tree = ttk.Treeview(self, columns=("status",), show="tree headings")
+        notebook = ttk.Notebook(self)
+        notebook.pack(fill="both", expand=True, padx=8, pady=(8, 0))
+
+        by_class_tab = ttk.Frame(notebook)
+        notebook.add(by_class_tab, text="By Class")
+
+        self.tree = ttk.Treeview(by_class_tab, columns=("status",), show="tree headings")
         self.tree.heading("#0", text="Class / Item")
         self.tree.heading("status", text="Status")
         self.tree.column("status", width=180, anchor="w")
-        self.tree.pack(fill="both", expand=True, padx=8, pady=(8, 0))
+        self.tree.pack(fill="both", expand=True)
         self.tree.bind("<<TreeviewSelect>>", self._on_select)
 
+        missing_tab = ttk.Frame(notebook)
+        notebook.add(missing_tab, text="All Missing Items")
+
+        missing_columns = [
+            ("item", "Item", 220),
+            ("class", "Class", 130),
+            ("status", "Status", 160),
+            ("source", "Source", 140),
+        ]
+        self.missing_tree = ttk.Treeview(missing_tab, columns=[c for c, _, _ in missing_columns],
+                                          show="headings")
+        for col, label, width in missing_columns:
+            self.missing_tree.heading(col, text=label,
+                                       command=lambda c=col: self._sort_missing(c, False))
+            self.missing_tree.column(col, width=width, anchor="w")
+        self.missing_tree.pack(fill="both", expand=True)
+        self.missing_tree.bind("<<TreeviewSelect>>", self._on_missing_select)
+
         self._item_details: dict[str, str] = {}
+        self._missing_item_details: dict[str, str] = {}
         self.detail_text = tk.Text(self, height=4, wrap="word", state="disabled",
                                     padx=8, pady=6, relief="sunken", borderwidth=1)
         self.detail_text.pack(fill="x", padx=8, pady=8)
@@ -84,6 +130,7 @@ class SkyTrackerApp(tk.Tk):
             self.summary_label.config(text="No character dumps found. Run '/outputfile achievements' "
                                             "and '/outputfile inventory' in-game, then choose that folder.")
             self.tree.delete(*self.tree.get_children())
+            self.missing_tree.delete(*self.missing_tree.get_children())
 
     def _load_selected_character(self) -> None:
         name = self.char_var.get()
@@ -105,7 +152,9 @@ class SkyTrackerApp(tk.Tk):
                  f"{self.report.unlocked_count}/{self.report.total_classes} classes unlocked"
         )
         self.tree.delete(*self.tree.get_children())
+        self.missing_tree.delete(*self.missing_tree.get_children())
         self._item_details.clear()
+        self._missing_item_details.clear()
         self._set_detail_text("Select an item below for its full pickup details.")
 
         if self.report.farmed_items:
@@ -127,20 +176,36 @@ class SkyTrackerApp(tk.Tk):
             node = self.tree.insert("", "end", text=cls.class_name, values=(status,),
                                      open=not cls.unlocked)
             for item in cls.items:
-                detail_lines = [item.name]
-                if item.complete:
-                    item_status = "✓ obtained"
-                else:
-                    item_status = "needed"
-                    if item.in_inventory:
-                        item_status += "  (in bags/bank!)"
-                        detail_lines.append("Already sitting in your bags/bank/keyring.")
-                    if item.hint and item.hint.found and item.hint.how_to_obtain:
-                        detail_lines.append(item.hint.how_to_obtain)
-                    elif not item.hint:
-                        detail_lines.append("No pickup hint available for this item yet.")
+                item_status, source, detail = self._describe_item(item)
                 iid = self.tree.insert(node, "end", text="   " + item.name, values=(item_status,))
-                self._item_details[iid] = "\n".join(detail_lines)
+                self._item_details[iid] = detail
+
+                if not item.complete:
+                    row = self.missing_tree.insert(
+                        "", "end", values=(item.name, cls.class_name, item_status, source)
+                    )
+                    self._missing_item_details[row] = detail
+
+        self._sort_missing("item", False)
+
+    def _describe_item(self, item: ItemStatus) -> tuple[str, str, str]:
+        """Returns (status text, source/drop-location tags, full detail text)
+        for a single item, shared by the by-class tree and the unified
+        missing-items list so the two views never disagree."""
+        detail_lines = [item.name]
+        source = ""
+        if item.complete:
+            return "✓ obtained", source, item.name
+        item_status = "needed"
+        if item.in_inventory:
+            item_status += "  (in bags/bank!)"
+            detail_lines.append("Already sitting in your bags/bank/keyring.")
+        if item.hint and item.hint.found and item.hint.how_to_obtain:
+            detail_lines.append(item.hint.how_to_obtain)
+            source = ", ".join(extract_island_tags(item.hint.how_to_obtain))
+        elif not item.hint:
+            detail_lines.append("No pickup hint available for this item yet.")
+        return item_status, source, "\n".join(detail_lines)
 
     def _on_select(self, _event: object) -> None:
         selected = self.tree.selection()
@@ -148,6 +213,19 @@ class SkyTrackerApp(tk.Tk):
             return
         text = self._item_details.get(selected[0], "")
         self._set_detail_text(text or "(class row -- select an item for details)")
+
+    def _on_missing_select(self, _event: object) -> None:
+        selected = self.missing_tree.selection()
+        if not selected:
+            return
+        self._set_detail_text(self._missing_item_details.get(selected[0], ""))
+
+    def _sort_missing(self, col: str, reverse: bool) -> None:
+        data = [(self.missing_tree.set(k, col), k) for k in self.missing_tree.get_children("")]
+        data.sort(key=lambda pair: pair[0].casefold(), reverse=reverse)
+        for index, (_value, k) in enumerate(data):
+            self.missing_tree.move(k, "", index)
+        self.missing_tree.heading(col, command=lambda: self._sort_missing(col, not reverse))
 
     def _set_detail_text(self, text: str) -> None:
         self.detail_text.config(state="normal")

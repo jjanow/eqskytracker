@@ -35,19 +35,40 @@ def _config_file() -> Path:
     return config_dir() / "config.json"
 
 
-def load_last_dir() -> Path | None:
+def _load_config() -> dict:
     try:
-        data = json.loads(_config_file().read_text(encoding="utf-8"))
-        value = data.get("last_dir")
-        return Path(value) if value else None
+        return json.loads(_config_file().read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        return None
+        return {}
+
+
+def _save_config_value(key: str, value: str) -> None:
+    """Read-modify-write a single key so saving one setting (e.g. window
+    geometry) never clobbers another (e.g. last_dir) already in the file."""
+    cdir = config_dir()
+    cdir.mkdir(parents=True, exist_ok=True)
+    data = _load_config()
+    data[key] = value
+    _config_file().write_text(json.dumps(data), encoding="utf-8")
+
+
+def load_last_dir() -> Path | None:
+    value = _load_config().get("last_dir")
+    return Path(value) if value else None
 
 
 def save_last_dir(directory: str | Path) -> None:
-    cdir = config_dir()
-    cdir.mkdir(parents=True, exist_ok=True)
-    _config_file().write_text(json.dumps({"last_dir": str(directory)}), encoding="utf-8")
+    _save_config_value("last_dir", str(directory))
+
+
+def load_window_geometry() -> str | None:
+    """Tk geometry string (e.g. '900x600+120+80') from the previous run, if any."""
+    value = _load_config().get("window_geometry")
+    return value if isinstance(value, str) else None
+
+
+def save_window_geometry(geometry: str) -> None:
+    _save_config_value("window_geometry", geometry)
 
 
 def _installed_games_dirs(installed_games: Path) -> list[Path]:

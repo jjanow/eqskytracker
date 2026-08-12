@@ -92,10 +92,11 @@ In order of priority:
 
 1. `--dir` on the command line, if given.
 2. The folder you last picked via the GUI's "Choose folder..." button or a
-   previous `--dir` run — remembered in a `config.json` under:
-   - Linux: `$XDG_CONFIG_HOME/eqskytracker` (defaults to `~/.config/eqskytracker`)
-   - macOS: `~/Library/Application Support/eqskytracker`
-   - Windows: `%APPDATA%\eqskytracker`
+   previous `--dir` run — remembered in a `config.json` next to the app's
+   own source (inside the `eqskytracker` package folder), so the app stays
+   self-contained and portable rather than writing into your home/profile
+   directory. That same file also remembers the GUI window's size and
+   position between runs.
 3. The `EQSKYTRACKER_DIR` environment variable, if set.
 4. A handful of common Wine/Proton and native install locations (e.g.
    `~/Games/*/drive_c/users/Public/Daybreak Game Company/Installed

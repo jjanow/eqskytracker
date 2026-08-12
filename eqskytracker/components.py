@@ -16,6 +16,7 @@ import re
 
 _HOW_TO_OBTAIN_RE = re.compile(r"^Turn in (.+) to .+ to complete '.+' \(reward: .+\)\.$")
 _TAG_SUFFIX_RE = re.compile(r"\s*\([^()]*\)\s*$")
+_ISLAND_TAG_RE = re.compile(r"\((\d+-[A-Za-z]+)\)")
 
 
 def parse_components(how_to_obtain: str) -> list[str]:
@@ -34,3 +35,11 @@ def parse_components(how_to_obtain: str) -> list[str]:
     if wind_rune:
         names.append(wind_rune.strip())
     return [n for n in names if n]
+
+
+def extract_island_tags(how_to_obtain: str) -> list[str]:
+    """Pull the island-tag parentheticals (e.g. '7-SotS' from 'Sphinx Claw
+    (7-SotS)') out of a hint's how_to_obtain text, in the order they appear.
+    Not every component names a tag (e.g. Wind Runes never do), so this can
+    return fewer tags than components -- that's expected, not an error."""
+    return _ISLAND_TAG_RE.findall(how_to_obtain)

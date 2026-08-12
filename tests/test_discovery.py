@@ -6,6 +6,26 @@ from unittest.mock import patch
 from eqskytracker import discovery
 
 
+class TestConfigPersistence(unittest.TestCase):
+    def test_saving_one_setting_does_not_clobber_another(self):
+        # Regression test: save_last_dir() used to overwrite the whole
+        # config.json, so saving window geometry after picking a folder (or
+        # vice versa) would silently erase the other setting.
+        with TemporaryDirectory() as tmp:
+            cfg_dir = Path(tmp)
+            with patch.object(discovery, "config_dir", return_value=cfg_dir):
+                discovery.save_last_dir("/some/dir")
+                discovery.save_window_geometry("900x600+10+10")
+
+                self.assertEqual(discovery.load_last_dir(), Path("/some/dir"))
+                self.assertEqual(discovery.load_window_geometry(), "900x600+10+10")
+
+    def test_load_window_geometry_missing_returns_none(self):
+        with TemporaryDirectory() as tmp:
+            with patch.object(discovery, "config_dir", return_value=Path(tmp)):
+                self.assertIsNone(discovery.load_window_geometry())
+
+
 class TestCandidateDirs(unittest.TestCase):
     def test_finds_per_game_wine_prefix_layout_without_remembered_dir(self):
         # Regression test: on a fresh install (no ~/.config/eqskytracker
