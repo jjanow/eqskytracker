@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        x:Class="EqSkyTracker.Gui.MainWindow"
+        x:CompileBindings="False"
+        Title="Plane of Sky Class Tracker"
+        Width="900" Height="600">
+
+    <DockPanel Margin="0">
+        <Border DockPanel.Dock="Top" Padding="8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderColor}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Name="ChooseFolderButton" Content="Choose folder..." />
+                <TextBlock Name="DirLabel" Classes="muted" VerticalAlignment="Center" Text="(no folder selected)" />
+                <TextBlock Text="Character:" VerticalAlignment="Center" Margin="16,0,0,0" />
+                <ComboBox Name="CharCombo" Width="220" />
+                <Button Name="RefreshButton" Content="Refresh" />
+            </StackPanel>
+        </Border>
+
+        <TextBlock Name="SummaryLabel" DockPanel.Dock="Top" FontSize="15" FontWeight="Bold" Padding="8,10" Text="" />
+
+        <Border DockPanel.Dock="Bottom" Padding="8" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderColor}">
+            <TextBox Name="DetailText" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                     Height="90" Text="Select an item below for its full pickup details." />
+        </Border>
+
+        <TabControl Margin="8,0,8,8">
+            <TabItem Header="By Class">
+                <TreeView Name="ClassTree">
+                    <TreeView.ItemTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}">
+                            <Grid ColumnDefinitions="*,180">
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="{Binding Foreground}" />
+                                <TextBlock Grid.Column="1" Text="{Binding Status}" Foreground="{Binding Foreground}" />
+                            </Grid>
+                        </TreeDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </TabItem>
+            <TabItem Header="All Missing Items">
+                <DataGrid Name="MissingGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="True" GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Item" Binding="{Binding Item}" Width="2*" />
+                        <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="*" />
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="1.2*" />
+                        <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="1.2*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

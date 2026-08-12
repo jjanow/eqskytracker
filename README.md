@@ -7,6 +7,9 @@ cross-references what's sitting in your bags/bank/keyring against those
 quests, so after a farming run you can tell at a glance what to keep and
 what's safe to sell or destroy.
 
+Cross-platform .NET (C#) app: a desktop GUI (Avalonia UI) plus a terminal
+CLI, both built on a shared core library. Runs on Windows, Linux, and macOS.
+
 ## Why this works without a fragile, hand-maintained quest database
 
 The game's own achievement export already lists every item required for
@@ -14,11 +17,12 @@ each class's "Primary Class Unlock" achievement, and flags each one
 complete/incomplete itself. This app reads that directly — it does not
 guess or hardcode quest requirements, so it can't drift out of sync with
 whatever the server's current quest data actually is. A bundled
-`data/plane_of_sky_item_sources.json` file adds optional "how do I get this"
-hints (NPC + turn-in items, sourced from eqlwiki.com) purely as a
-convenience layer on top of that authoritative data — if it's ever missing
-or stale, the core tracker still works correctly, it just won't have a tip
-for that item, and the sell/destroy check below won't cover it either.
+`src/EqSkyTracker.Core/data/plane_of_sky_item_sources.json` file adds
+optional "how do I get this" hints (NPC + turn-in items, sourced from
+eqlwiki.com) purely as a convenience layer on top of that authoritative
+data — if it's ever missing or stale, the core tracker still works
+correctly, it just won't have a tip for that item, and the sell/destroy
+check below won't cover it either.
 
 ## In-game setup (do this first, every time you want fresh data)
 
@@ -43,49 +47,53 @@ doesn't watch for changes.
 
 ## Run it
 
-No install step needed — the app has zero third-party dependencies, so it
-runs straight out of the repo. Pick the launcher for your platform:
+There are two ways to run the app, depending on whether you want a
+zero-install executable or you're working from a source checkout.
+
+### Zero-install executable (recommended for just using the app)
+
+Run `./publish.sh` (Linux/macOS) or `publish.bat` (Windows) once from a
+checked-out copy of this repo — it needs the .NET SDK to *build* the
+executables, but the result needs nothing installed to *run*: no .NET
+runtime, no Python, nothing. It produces self-contained folders under
+`publish/<runtime-id>/`, one per platform (`win-x64`, `linux-x64`,
+`osx-arm64` by default):
+
+```
+publish/win-x64/EqSkyTracker.Gui/EqSkyTracker.Gui.exe
+publish/win-x64/EqSkyTracker.Cli/EqSkyTracker.Cli.exe
+```
+
+Copy the whole `EqSkyTracker.Gui` (or `EqSkyTracker.Cli`) folder to the
+target machine — the data file it depends on ships alongside the
+executable — and double-click (Windows/macOS) or run it directly
+(Linux). On Windows this is genuinely "download folder, double-click
+`.exe`, done" — no installer, no runtime prerequisite.
+
+### From a source checkout (needs the .NET SDK)
+
+Requires the [.NET SDK](https://dotnet.microsoft.com/download) (10.0 or
+later) installed. Pick the launcher for your platform:
 
 - **Linux/macOS (terminal):** `./run.sh`
 - **macOS (double-click in Finder):** `run.command`
 - **Windows (double-click in Explorer, or from a terminal):** `run.bat`
 
-That's the single command/double-click: it opens the GUI, which
-auto-detects your dump folder (see "How the folder is found" below) or lets
-you browse to it with "Choose folder...", and remembers your choice for
-next time. These launchers always open the GUI; for terminal-mode flags
-like `--list-chars` or `--dir`, call `python3 -m eqskytracker` (or `python
--m eqskytracker` on Windows) directly (see below).
-
-If you'd rather not use the script, the equivalent is:
-
-```
-python3 -m eqskytracker --gui
-```
+These always open the GUI, auto-detecting your dump folder (see "How the
+folder is found" below) or letting you browse to it with "Choose
+folder...", and remembering your choice for next time.
 
 For a one-off terminal report instead of the GUI:
 
 ```
-python3 -m eqskytracker --dir "/path/to/your/EverQuest folder"
+dotnet run --project src/EqSkyTracker.Cli -- --dir "/path/to/your/EverQuest folder"
 ```
 
-Requires Python 3.10+. The GUI needs Tk support (ships with the standard
-python.org installers on Windows/macOS; on Linux you may need a
-`python3-tk` package from your distro — if it's missing, `run.sh` will fail
-with an `ImportError: No module named '_tkinter'`, which is your cue to
-install it).
-
-### Optional: install it as a regular command
+or, from a published build:
 
 ```
-pip install -e .
+publish/<rid>/EqSkyTracker.Cli/EqSkyTracker.Cli --dir "/path/to/your/EverQuest folder"
 ```
-
-gives you a plain `eqskytracker` command instead of `python3 -m
-eqskytracker` / `./run.sh`. Skip this if your system Python is
-"externally managed" and refuses global `pip install`s (common on recent
-Debian/Ubuntu) — `run.sh` works fine without it, since there's nothing to
-install.
 
 ## How the folder is found
 
@@ -93,19 +101,17 @@ In order of priority:
 
 1. `--dir` on the command line, if given.
 2. The folder you last picked via the GUI's "Choose folder..." button or a
-   previous `--dir` run — remembered in a `config.json` next to the app's
-   own source (inside the `eqskytracker` package folder), so the app stays
-   self-contained and portable rather than writing into your home/profile
-   directory. That same file also remembers the GUI window's size and
-   position between runs.
+   previous `--dir` run — remembered in a `config.json` next to the
+   executable, so the app stays self-contained and portable rather than
+   writing into your home/profile directory. That same file also remembers
+   the GUI window's size and position between runs.
 3. The `EQSKYTRACKER_DIR` environment variable, if set.
 4. A handful of common Wine/Proton and native install locations (e.g.
    `~/Games/*/drive_c/users/Public/Daybreak Game Company/Installed
    Games/*`, `~/.wine/...`, `~/Documents/EverQuest`). These are bounded,
    non-recursive guesses — they won't find an install in a nonstandard
    location, so use `--dir` or the GUI's folder picker for anything unusual.
-5. The current working directory, as a last resort (this is why `run.sh`
-   still works if you `cd` into the repo and run it directly).
+5. The current working directory, as a last resort.
 
 Use `--list-chars` to see which character dumps were found in the resolved
 folder, and `--char <name>` to pick one when a folder has dumps for more
@@ -117,7 +123,7 @@ than one character.
   a heuristic), and which of the required items you've obtained. Add
   `--all` to expand the item checklist for classes that are already fully
   unlocked too (unlocked classes are always listed, just collapsed by
-  default).
+  default in the CLI; the GUI always shows both).
 - For items you still need: a "how to get it" hint when available (turn-in
   NPC + required components), and a flag if the item is currently sitting
   in your bags/bank/keyring.
@@ -128,12 +134,22 @@ than one character.
   This only covers items the bundled hint data recognizes as PoS turn-ins —
   it says nothing about the rest of your inventory.
 
+## Project layout
+
+- `src/EqSkyTracker.Core` — parsers (achievements/inventory dump files),
+  report building, folder/character discovery, config persistence. No UI
+  dependencies.
+- `src/EqSkyTracker.Cli` — terminal report / `--list-chars` / `--dir`.
+- `src/EqSkyTracker.Gui` — the Avalonia desktop GUI (Windows/Linux/macOS).
+- `tests/EqSkyTracker.Tests` — xUnit tests for the core library.
+
 ## Development
 
 ```
-python3 -m unittest discover -s tests
+dotnet test
 ```
 
-Fixtures under `tests/fixtures/` are small, hand-written files that mirror
-the real dump format (tab-delimited, CRLF line endings, the inventory
-file's two-section item/keyring layout) — they're not real character data.
+Fixtures under `tests/EqSkyTracker.Tests/fixtures/` are small, hand-written
+files that mirror the real dump format (tab-delimited, CRLF line endings,
+the inventory file's two-section item/keyring layout) — they're not real
+character data.

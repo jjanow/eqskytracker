@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EqSkyTracker.Cli/EqSkyTracker.Cli.csproj" />
+    <Project Path="src/EqSkyTracker.Core/EqSkyTracker.Core.csproj" />
+    <Project Path="src/EqSkyTracker.Gui/EqSkyTracker.Gui.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EqSkyTracker.Tests/EqSkyTracker.Tests.csproj" />
+  </Folder>
+</Solution>

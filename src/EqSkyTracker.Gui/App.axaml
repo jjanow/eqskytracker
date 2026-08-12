@@ -1,0 +1,90 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="EqSkyTracker.Gui.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    </Application.Styles>
+
+    <Application.Resources>
+        <SolidColorBrush x:Key="WindowBg">#1e1f22</SolidColorBrush>
+        <SolidColorBrush x:Key="PanelBg">#26282b</SolidColorBrush>
+        <SolidColorBrush x:Key="FieldBg">#2b2d30</SolidColorBrush>
+        <SolidColorBrush x:Key="BorderColor">#3a3d41</SolidColorBrush>
+        <SolidColorBrush x:Key="StripeBg">#2a2c2f</SolidColorBrush>
+        <SolidColorBrush x:Key="TextFg">#e6e6e6</SolidColorBrush>
+        <SolidColorBrush x:Key="TextMuted">#9a9ea3</SolidColorBrush>
+        <SolidColorBrush x:Key="AccentBrush">#5b9cf6</SolidColorBrush>
+        <SolidColorBrush x:Key="AccentActiveBrush">#7cb0f8</SolidColorBrush>
+        <SolidColorBrush x:Key="StatusGreen">#7ec699</SolidColorBrush>
+        <SolidColorBrush x:Key="StatusAmber">#e0b350</SolidColorBrush>
+        <SolidColorBrush x:Key="StatusRed">#e08787</SolidColorBrush>
+
+        <Color x:Key="SystemAccentColor">#5b9cf6</Color>
+    </Application.Resources>
+
+    <Application.Styles>
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{DynamicResource WindowBg}" />
+        </Style>
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFg}" />
+        </Style>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="{DynamicResource PanelBg}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="12,6" />
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="{DynamicResource FieldBg}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+        <Style Selector="TreeView">
+            <Setter Property="Background" Value="{DynamicResource FieldBg}" />
+        </Style>
+        <Style Selector="TreeViewItem">
+            <Setter Property="Padding" Value="4,3" />
+        </Style>
+        <Style Selector="TabControl">
+            <Setter Property="Background" Value="{DynamicResource WindowBg}" />
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="Background" Value="{DynamicResource PanelBg}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+        </Style>
+        <Style Selector="TabItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource WindowBg}" />
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFg}" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{DynamicResource PanelBg}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+        <Style Selector="DataGrid">
+            <Setter Property="Background" Value="{DynamicResource FieldBg}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="{DynamicResource PanelBg}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFg}" />
+        </Style>
+        <Style Selector="DataGridRow:nth-child(2n)">
+            <Setter Property="Background" Value="{DynamicResource StripeBg}" />
+        </Style>
+    </Application.Styles>
+</Application>
