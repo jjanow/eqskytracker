@@ -54,6 +54,30 @@ public class ConfigPersistenceTests
     }
 
     [Fact]
+    public void ExpandClassesByDefaultDefaultsToFalseAndRoundTrips()
+    {
+        string tmp = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            var env = new FakeDiscoveryEnvironment { HomeDirectory = tmp, ConfigDirectory = tmp, CurrentDirectory = tmp };
+            Assert.False(Discovery.LoadExpandClassesByDefault(env));
+
+            Discovery.SaveLastDir("/some/dir", env);
+            Discovery.SaveExpandClassesByDefault(true, env);
+
+            Assert.True(Discovery.LoadExpandClassesByDefault(env));
+            Assert.Equal("/some/dir", Discovery.LoadLastDir(env)); // not clobbered
+
+            Discovery.SaveExpandClassesByDefault(false, env);
+            Assert.False(Discovery.LoadExpandClassesByDefault(env));
+        }
+        finally
+        {
+            Directory.Delete(tmp, recursive: true);
+        }
+    }
+
+    [Fact]
     public void UnwritableConfigDirDoesNotRaise()
     {
         // Regression test: if the app is installed somewhere the current

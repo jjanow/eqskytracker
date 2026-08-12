@@ -24,6 +24,7 @@ public partial class MainWindow : Window
     private readonly TreeView _classTree;
     private readonly DataGrid _missingGrid;
     private readonly TextBox _detailText;
+    private readonly CheckBox _expandClassesCheckBox;
 
     private string? _currentDir;
     private List<Character> _characters = [];
@@ -46,15 +47,18 @@ public partial class MainWindow : Window
         _classTree = this.FindControl<TreeView>("ClassTree")!;
         _missingGrid = this.FindControl<DataGrid>("MissingGrid")!;
         _detailText = this.FindControl<TextBox>("DetailText")!;
+        _expandClassesCheckBox = this.FindControl<CheckBox>("ExpandClassesCheckBox")!;
 
         _chooseFolderButton.Click += OnChooseFolderClick;
         _refreshButton.Click += (_, _) => ReloadCharacters();
         _charCombo.SelectionChanged += OnCharComboSelectionChanged;
         _classTree.SelectionChanged += OnClassTreeSelectionChanged;
         _missingGrid.SelectionChanged += OnMissingGridSelectionChanged;
+        _expandClassesCheckBox.IsCheckedChanged += OnExpandClassesCheckedChanged;
         Closing += OnClosing;
 
         ApplySavedGeometry();
+        _expandClassesCheckBox.IsChecked = Discovery.LoadExpandClassesByDefault();
 
         _currentDir = initialDir;
         ReloadCharacters();
@@ -194,6 +198,20 @@ public partial class MainWindow : Window
         RenderReport();
     }
 
+    // -- expand-classes preference ---------------------------------------
+    private void OnExpandClassesCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        bool expand = _expandClassesCheckBox.IsChecked ?? false;
+        Discovery.SaveExpandClassesByDefault(expand);
+        if (_classTree.ItemsSource is IEnumerable<TreeNode> nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.IsExpanded = expand;
+            }
+        }
+    }
+
     // -- rendering ------------------------------------------------------
     private void RenderReport()
     {
@@ -246,6 +264,12 @@ public partial class MainWindow : Window
                 }
             }
             rootNodes.Add(classNode);
+        }
+
+        bool expand = _expandClassesCheckBox.IsChecked ?? false;
+        foreach (TreeNode node in rootNodes)
+        {
+            node.IsExpanded = expand;
         }
 
         _classTree.ItemsSource = rootNodes;

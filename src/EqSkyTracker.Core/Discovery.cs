@@ -127,6 +127,25 @@ public static class Discovery
     public static void SaveWindowGeometry(string geometry, IDiscoveryEnvironment? env = null) =>
         SaveConfigValue("window_geometry", geometry, env);
 
+    /// <summary>Whether the "By Class" tree should start fully expanded, per the user's last choice. Defaults to false (collapsed).</summary>
+    public static bool LoadExpandClassesByDefault(IDiscoveryEnvironment? env = null) =>
+        LoadConfig(env)["expand_classes"] is JsonValue v && v.TryGetValue(out bool b) && b;
+
+    public static void SaveExpandClassesByDefault(bool value, IDiscoveryEnvironment? env = null)
+    {
+        try
+        {
+            string cdir = ConfigDir(env);
+            Directory.CreateDirectory(cdir);
+            JsonObject data = LoadConfig(env);
+            data["expand_classes"] = value;
+            File.WriteAllText(ConfigFilePath(env), data.ToJsonString());
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
+    }
+
     /// <summary>
     /// "Installed Games" holds one subfolder per installed title (e.g.
     /// "EverQuestLegends") -- the dump files live inside that subfolder, not

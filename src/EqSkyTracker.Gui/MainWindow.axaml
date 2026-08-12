@@ -16,6 +16,8 @@
                 <TextBlock Text="Character:" VerticalAlignment="Center" Margin="16,0,0,0" />
                 <ComboBox Name="CharCombo" Width="220" />
                 <Button Name="RefreshButton" Content="Refresh" />
+                <CheckBox Name="ExpandClassesCheckBox" Content="Start with classes expanded"
+                          VerticalAlignment="Center" Margin="16,0,0,0" />
             </StackPanel>
         </Border>
 
@@ -29,6 +31,11 @@
         <TabControl Margin="8,0,8,8">
             <TabItem Header="By Class">
                 <TreeView Name="ClassTree">
+                    <TreeView.Styles>
+                        <Style Selector="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        </Style>
+                    </TreeView.Styles>
                     <TreeView.ItemTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}">
                             <Grid ColumnDefinitions="*,180">
