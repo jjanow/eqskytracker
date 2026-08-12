@@ -44,17 +44,18 @@ doesn't watch for changes.
 ## Run it
 
 No install step needed — the app has zero third-party dependencies, so it
-runs straight out of the repo:
+runs straight out of the repo. Pick the launcher for your platform:
 
-```
-./run.sh
-```
+- **Linux/macOS (terminal):** `./run.sh`
+- **macOS (double-click in Finder):** `run.command`
+- **Windows (double-click in Explorer, or from a terminal):** `run.bat`
 
-That's the single command: it opens the GUI, which auto-detects your dump
-folder (see "How the folder is found" below) or lets you browse to it with
-"Choose folder...", and remembers your choice for next time. `run.sh`
-always opens the GUI; for terminal-mode flags like `--list-chars` or
-`--dir`, call `python3 -m eqskytracker` directly (see below).
+That's the single command/double-click: it opens the GUI, which
+auto-detects your dump folder (see "How the folder is found" below) or lets
+you browse to it with "Choose folder...", and remembers your choice for
+next time. These launchers always open the GUI; for terminal-mode flags
+like `--list-chars` or `--dir`, call `python3 -m eqskytracker` (or `python
+-m eqskytracker` on Windows) directly (see below).
 
 If you'd rather not use the script, the equivalent is:
 
