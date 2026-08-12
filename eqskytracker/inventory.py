@@ -21,6 +21,8 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 
+from .dumpfile import read_dump_lines
+
 _SUFFIX_RE = re.compile(r"\s*(\+\d+|\(Exaltation\))\s*$")
 
 
@@ -82,8 +84,7 @@ def parse_inventory(path: str | Path) -> Inventory:
     items: list[InventoryItem] = []
     keyring: list[KeyringItem] = []
 
-    with open(path, encoding="utf-8-sig", newline="") as f:
-        lines = [raw.rstrip("\r\n") for raw in f]
+    lines = read_dump_lines(path)
 
     # Section 1: item slots, up to the first blank line.
     section_break = len(lines)

@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import re
 
+from .dumpfile import read_dump_lines
+
 CLASS_UNLOCK_RE = re.compile(r"^Primary Class Unlock - (.+)$")
 OBTAIN_RE = re.compile(r"^Obtain (.+?)\.?$")
 
@@ -53,25 +55,23 @@ def parse_achievements(path: str | Path) -> list[Achievement]:
     category = ""
     current: Achievement | None = None
 
-    with open(path, encoding="utf-8-sig", newline="") as f:
-        for raw in f:
-            line = raw.rstrip("\r\n")
-            if not line:
-                continue
-            parts = line.split("\t")
-            status_flag = parts[0]
-            if status_flag not in ("C", "I"):
-                category = line.strip()
-                current = None
-                continue
-            complete = status_flag == "C"
-            if len(parts) == 2:
-                current = Achievement(name=parts[1].strip(), complete=complete, category=category)
-                achievements.append(current)
-            elif len(parts) >= 3 and current is not None:
-                text = parts[-1].strip()
-                if text:
-                    current.requirements.append(Requirement(text=text, complete=complete))
+    for line in read_dump_lines(path):
+        if not line:
+            continue
+        parts = line.split("\t")
+        status_flag = parts[0]
+        if status_flag not in ("C", "I"):
+            category = line.strip()
+            current = None
+            continue
+        complete = status_flag == "C"
+        if len(parts) == 2:
+            current = Achievement(name=parts[1].strip(), complete=complete, category=category)
+            achievements.append(current)
+        elif len(parts) >= 3 and current is not None:
+            text = parts[-1].strip()
+            if text:
+                current.requirements.append(Requirement(text=text, complete=complete))
     return achievements
 
 

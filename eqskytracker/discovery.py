@@ -44,12 +44,19 @@ def _load_config() -> dict:
 
 def _save_config_value(key: str, value: str) -> None:
     """Read-modify-write a single key so saving one setting (e.g. window
-    geometry) never clobbers another (e.g. last_dir) already in the file."""
-    cdir = config_dir()
-    cdir.mkdir(parents=True, exist_ok=True)
-    data = _load_config()
-    data[key] = value
-    _config_file().write_text(json.dumps(data), encoding="utf-8")
+    geometry) never clobbers another (e.g. last_dir) already in the file.
+    Best-effort: if the app's own directory isn't writable (e.g. installed
+    system-wide into a read-only location), silently skip persisting rather
+    than crashing -- remembering the folder/geometry is a convenience, not
+    something the app depends on to function."""
+    try:
+        cdir = config_dir()
+        cdir.mkdir(parents=True, exist_ok=True)
+        data = _load_config()
+        data[key] = value
+        _config_file().write_text(json.dumps(data), encoding="utf-8")
+    except OSError:
+        pass
 
 
 def load_last_dir() -> Path | None:
@@ -141,13 +148,26 @@ def candidate_dirs() -> list[Path]:
 
 
 def find_characters(directory: str | Path) -> list[Character]:
-    """Scan a directory (non-recursive) for <name>-Achievements.txt / -Inventory.txt pairs."""
+    """Scan a directory (non-recursive) for <name>-Achievements.txt / -Inventory.txt pairs.
+
+    Guarded against OSError (e.g. PermissionError): a candidate directory
+    can exist but not be listable -- notably on macOS, where TCC can deny
+    directory-listing access to folders like ~/Documents until the user
+    grants it -- and a permission error here must not crash the app on
+    startup, it should just mean "no characters found in this folder"."""
     directory = Path(directory)
     names: dict[str, Character] = {}
     if not directory.is_dir():
         return []
-    for path in directory.iterdir():
-        if not path.is_file():
+    try:
+        entries = list(directory.iterdir())
+    except OSError:
+        return []
+    for path in entries:
+        try:
+            if not path.is_file():
+                continue
+        except OSError:
             continue
         if path.name.endswith("-Achievements.txt"):
             name = path.name[: -len("-Achievements.txt")]

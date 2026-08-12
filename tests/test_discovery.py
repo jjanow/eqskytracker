@@ -4,6 +4,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from eqskytracker import discovery
+from eqskytracker.discovery import find_characters
 
 
 class TestConfigPersistence(unittest.TestCase):
@@ -24,6 +25,22 @@ class TestConfigPersistence(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             with patch.object(discovery, "config_dir", return_value=Path(tmp)):
                 self.assertIsNone(discovery.load_window_geometry())
+
+    def test_unwritable_config_dir_does_not_raise(self):
+        # Regression test: if the app is installed somewhere the current
+        # user can't write to (e.g. a system-wide install on Windows/macOS/
+        # Linux), saving a setting used to raise OSError and crash whatever
+        # triggered it (picking a folder, closing the window). Persisting
+        # the setting is a convenience, not something the app should depend
+        # on to keep running.
+        with TemporaryDirectory() as tmp:
+            unwritable = Path(tmp) / "readonly"
+            unwritable.mkdir(mode=0o500)
+            try:
+                with patch.object(discovery, "config_dir", return_value=unwritable / "nested"):
+                    discovery.save_last_dir("/some/dir")  # must not raise
+            finally:
+                unwritable.chmod(0o700)
 
 
 class TestCandidateDirs(unittest.TestCase):
@@ -52,6 +69,25 @@ class TestCandidateDirs(unittest.TestCase):
             self.assertIn(game_dir.resolve(), dirs)
             characters = discovery.find_characters(game_dir)
             self.assertEqual(characters[0].name, "Someone_server")
+
+
+class TestFindCharactersPermissionErrors(unittest.TestCase):
+    def test_unreadable_directory_returns_empty_instead_of_raising(self):
+        # Regression test: a candidate directory can exist but not be
+        # listable (e.g. macOS TCC denying access to ~/Documents until the
+        # user grants it). That must degrade to "no characters here", not
+        # crash the app during startup's directory scan.
+        with TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            with patch.object(Path, "iterdir", side_effect=PermissionError("denied")):
+                self.assertEqual(find_characters(directory), [])
+
+    def test_unreadable_entry_is_skipped_not_raised(self):
+        with TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            (directory / "Someone_server-Achievements.txt").write_text("")
+            with patch.object(Path, "is_file", side_effect=PermissionError("denied")):
+                self.assertEqual(find_characters(directory), [])
 
 
 if __name__ == "__main__":

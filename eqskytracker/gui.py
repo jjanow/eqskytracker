@@ -148,7 +148,7 @@ class SkyTrackerApp(tk.Tk):
             return
         try:
             self.report = build_report(match.achievements_path, match.inventory_path)
-        except OSError as exc:
+        except (OSError, ValueError) as exc:
             messagebox.showerror("Failed to read dump", str(exc))
             return
         self._render_report()

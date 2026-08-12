@@ -56,6 +56,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--list-chars", action="store_true", help="List discovered characters and exit")
     args = parser.parse_args(argv)
 
+    if args.dir and not Path(args.dir).is_dir():
+        print(f"--dir '{args.dir}' is not a directory.", file=sys.stderr)
+        return 1
+
     if args.gui:
         from .gui import run_gui
         return run_gui(initial_dir=args.dir)
