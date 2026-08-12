@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Single-command GUI launcher: no install step needed (the package has zero
-# third-party dependencies, so running it in place from the repo works
-# as-is). This always opens the GUI -- for terminal flags like --list-chars
-# or --dir, use `python3 -m eqskytracker` directly instead.
+# Single-command GUI launcher for a checked-out source tree: builds and runs
+# the GUI via the .NET SDK (`dotnet`), so it needs the SDK installed here --
+# same tradeoff the old Python version had with needing python3 installed.
+# For a build that runs on a machine with NOTHING pre-installed (no .NET, no
+# Python), run ./publish.sh once and hand out the resulting publish/<rid>/
+# folder instead. For terminal flags like --list-chars or --dir, use
+# `dotnet run --project src/EqSkyTracker.Cli --` directly instead.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
-exec python3 -m eqskytracker --gui
+exec dotnet run --project src/EqSkyTracker.Gui -c Release -- "$@"

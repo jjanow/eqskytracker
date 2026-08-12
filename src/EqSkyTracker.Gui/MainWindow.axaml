@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        x:Class="EqSkyTracker.Gui.MainWindow"
+        x:CompileBindings="False"
+        Title="Plane of Sky Class Tracker"
+        Width="900" Height="600">
+
+    <DockPanel Margin="0">
+        <Border DockPanel.Dock="Top" Padding="8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderColor}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Name="ChooseFolderButton" Content="Choose folder..." />
+                <TextBlock Name="DirLabel" Classes="muted" VerticalAlignment="Center" Text="(no folder selected)" />
+                <TextBlock Text="Character:" VerticalAlignment="Center" Margin="16,0,0,0" />
+                <ComboBox Name="CharCombo" Width="220" />
+                <Button Name="RefreshButton" Content="Refresh" />
+                <CheckBox Name="ExpandClassesCheckBox" Content="Start with classes expanded"
+                          VerticalAlignment="Center" Margin="16,0,0,0" />
+            </StackPanel>
+        </Border>
+
+        <TextBlock Name="SummaryLabel" DockPanel.Dock="Top" FontSize="15" FontWeight="Bold" Padding="8,10" Text="" />
+
+        <Border DockPanel.Dock="Bottom" Padding="8" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderColor}">
+            <TextBox Name="DetailText" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                     Height="90" Text="Select an item below for its full pickup details." />
+        </Border>
+
+        <TabControl Margin="8,0,8,8">
+            <TabItem Header="By Class">
+                <TreeView Name="ClassTree">
+                    <TreeView.Styles>
+                        <Style Selector="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        </Style>
+                    </TreeView.Styles>
+                    <TreeView.ItemTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}">
+                            <Grid ColumnDefinitions="*,180">
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="{Binding Foreground}" />
+                                <TextBlock Grid.Column="1" Text="{Binding Status}" Foreground="{Binding Foreground}" />
+                            </Grid>
+                        </TreeDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </TabItem>
+            <TabItem Header="All Missing Items">
+                <DataGrid Name="MissingGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="True" CanUserResizeColumns="True" GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Item" SortMemberPath="Item" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Item}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Source" SortMemberPath="Source" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Source}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Needed For" SortMemberPath="NeededFor" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding NeededFor}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="In Bags?" SortMemberPath="InBags" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding InBags}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
