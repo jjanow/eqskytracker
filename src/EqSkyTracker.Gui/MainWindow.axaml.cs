@@ -1,3 +1,4 @@
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -69,12 +70,15 @@ public partial class MainWindow : Window
         {
             string[] parts = saved.Split(',');
             if (parts.Length == 4 &&
-                double.TryParse(parts[0], out double w) && double.TryParse(parts[1], out double h) &&
-                int.TryParse(parts[2], out int x) && int.TryParse(parts[3], out int y) &&
+                double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double w) &&
+                double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double h) &&
+                int.TryParse(parts[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out int x) &&
+                int.TryParse(parts[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int y) &&
                 w > 0 && h > 0)
             {
                 Width = w;
                 Height = h;
+                WindowStartupLocation = WindowStartupLocation.Manual;
                 Position = new PixelPoint(x, y);
                 return;
             }
@@ -87,7 +91,9 @@ public partial class MainWindow : Window
     {
         if (WindowState == WindowState.Normal)
         {
-            Discovery.SaveWindowGeometry($"{Width:0},{Height:0},{Position.X},{Position.Y}");
+            string geometry = string.Create(CultureInfo.InvariantCulture,
+                $"{Width:F0},{Height:F0},{Position.X},{Position.Y}");
+            Discovery.SaveWindowGeometry(geometry);
         }
     }
 
@@ -132,19 +138,26 @@ public partial class MainWindow : Window
         }
 
         List<string> names = [.. _characters.Where(c => c.AchievementsPath is not null).Select(c => c.Name)];
+
         _suppressComboSelection = true;
         _charCombo.ItemsSource = names;
-        _suppressComboSelection = false;
-
         if (names.Count > 0)
         {
             string current = _charCombo.SelectedItem as string ?? "";
             _charCombo.SelectedItem = names.Contains(current) ? current : names[0];
-            LoadSelectedCharacter();
         }
         else
         {
             _charCombo.SelectedItem = null;
+        }
+        _suppressComboSelection = false;
+
+        if (names.Count > 0)
+        {
+            LoadSelectedCharacter();
+        }
+        else
+        {
             _summaryLabel.Text = "No character dumps found. Run '/outputfile achievements' " +
                                   "and '/outputfile inventory' in-game, then choose that folder.";
             _classTree.ItemsSource = null;

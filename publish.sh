@@ -22,7 +22,15 @@ for rid in "${rids[@]}"; do
         dotnet publish "src/$proj/$proj.csproj" \
             -c Release -r "$rid" --self-contained true \
             -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:DebugType=none \
             -o "$out"
+        # .NET's own debug symbols are already suppressed by DebugType=none
+        # above; these are *.pdb files some third-party native-dependency
+        # NuGet packages (e.g. SkiaSharp, HarfBuzzSharp) ship as plain
+        # content alongside their native libs -- strip them too, since
+        # they're only useful for debugging those libraries' native code,
+        # not this app, and they dwarf everything else in the folder.
+        find "$out" -name '*.pdb' -delete
     done
 done
 

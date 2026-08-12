@@ -17,7 +17,9 @@ for %%R in (%RIDS%) do (
         dotnet publish "src\%%P\%%P.csproj" ^
             -c Release -r %%R --self-contained true ^
             -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true ^
+            -p:DebugType=none ^
             -o "publish\%%R\%%P"
+        del /q "publish\%%R\%%P\*.pdb" 2>nul
     )
 )
 
