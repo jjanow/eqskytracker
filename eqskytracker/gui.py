@@ -16,6 +16,7 @@ from .discovery import (
     save_window_geometry,
 )
 from .report import build_report, CharacterReport, ItemStatus
+from . import theme
 
 DEFAULT_GEOMETRY = "900x600"
 
@@ -24,6 +25,7 @@ class SkyTrackerApp(tk.Tk):
     def __init__(self, initial_dir: str | None = None):
         super().__init__()
         self.title("Plane of Sky Class Tracker")
+        theme.apply_dark_theme(self)
         try:
             self.geometry(load_window_geometry() or DEFAULT_GEOMETRY)
         except tk.TclError:
@@ -51,7 +53,7 @@ class SkyTrackerApp(tk.Tk):
         top.pack(fill="x")
 
         ttk.Button(top, text="Choose folder...", command=self._choose_dir).pack(side="left")
-        self.dir_label = ttk.Label(top, text="(no folder selected)")
+        self.dir_label = ttk.Label(top, text="(no folder selected)", style="Muted.TLabel")
         self.dir_label.pack(side="left", padx=8)
 
         ttk.Label(top, text="Character:").pack(side="left", padx=(16, 4))
@@ -62,7 +64,7 @@ class SkyTrackerApp(tk.Tk):
 
         ttk.Button(top, text="Refresh", command=self._reload_characters).pack(side="left", padx=8)
 
-        self.summary_label = ttk.Label(self, text="", font=("", 12, "bold"), padding=(8, 4))
+        self.summary_label = ttk.Label(self, text="", font=("", 13, "bold"), padding=(8, 6))
         self.summary_label.pack(fill="x")
 
         notebook = ttk.Notebook(self)
@@ -99,8 +101,15 @@ class SkyTrackerApp(tk.Tk):
         self._item_details: dict[str, str] = {}
         self._missing_item_details: dict[str, str] = {}
         self.detail_text = tk.Text(self, height=4, wrap="word", state="disabled",
-                                    padx=8, pady=6, relief="sunken", borderwidth=1)
+                                    padx=10, pady=8)
+        theme.style_text_widget(self.detail_text)
         self.detail_text.pack(fill="x", padx=8, pady=8)
+
+        for tree in (self.tree, self.missing_tree):
+            tree.tag_configure("unlocked", foreground=theme.GREEN)
+            tree.tag_configure("needed", foreground=theme.AMBER)
+            tree.tag_configure("keep", foreground=theme.RED)
+            tree.tag_configure("stripe", background=theme.STRIPE_BG)
 
     # -- data loading -------------------------------------------------------
     def _choose_dir(self) -> None:
@@ -159,30 +168,38 @@ class SkyTrackerApp(tk.Tk):
 
         if self.report.farmed_items:
             farmed_node = self.tree.insert("", "end", text="Farmed items (Sky turn-ins)", values=("",), open=True)
-            for f in self.report.farmed_items:
+            for i, f in enumerate(self.report.farmed_items):
                 where = ", ".join(f.locations)
                 if f.safe_to_sell:
-                    status, detail = "safe to sell/destroy", f"Not needed for anything still incomplete.\n{where}"
+                    status, detail, tag = "safe to sell/destroy", \
+                        f"Not needed for anything still incomplete.\n{where}", "unlocked"
                 else:
                     status = "KEEP -- needed"
                     detail = f"Needed for: {', '.join(f.needed_for)}\n{where}"
+                    tag = "keep"
+                tags = (tag,) if i % 2 == 0 else (tag, "stripe")
                 iid = self.tree.insert(farmed_node, "end",
-                                        text=f"   {f.name} x{f.count}", values=(status,))
+                                        text=f"   {f.name} x{f.count}", values=(status,), tags=tags)
                 self._item_details[iid] = detail
 
         classes = sorted(self.report.classes, key=lambda c: (c.unlocked, c.class_name))
         for cls in classes:
             status = "✓ Unlocked" if cls.unlocked else f"{cls.obtained_count}/{cls.total_count} items"
             node = self.tree.insert("", "end", text=cls.class_name, values=(status,),
-                                     open=not cls.unlocked)
-            for item in cls.items:
+                                     open=not cls.unlocked,
+                                     tags=("unlocked",) if cls.unlocked else ())
+            for i, item in enumerate(cls.items):
                 item_status, source, detail = self._describe_item(item)
-                iid = self.tree.insert(node, "end", text="   " + item.name, values=(item_status,))
+                tag = "unlocked" if item.complete else "needed"
+                tags = (tag,) if i % 2 == 0 else (tag, "stripe")
+                iid = self.tree.insert(node, "end", text="   " + item.name, values=(item_status,), tags=tags)
                 self._item_details[iid] = detail
 
                 if not item.complete:
                     row = self.missing_tree.insert(
-                        "", "end", values=(item.name, cls.class_name, item_status, source)
+                        "", "end", values=(item.name, cls.class_name, item_status, source),
+                        tags=(tag,) if len(self.missing_tree.get_children("")) % 2 == 0
+                        else (tag, "stripe")
                     )
                     self._missing_item_details[row] = detail
 
