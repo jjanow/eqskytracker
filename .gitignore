@@ -4,13 +4,3 @@ publish/
 *.user
 .vs/
 .idea/
-
-__pycache__/
-*.pyc
-eqskytracker/config.json
-*.egg-info/
-build/
-dist/
-.venv/
-venv/
-.pytest_cache/
