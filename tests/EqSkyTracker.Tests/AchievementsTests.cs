@@ -44,7 +44,7 @@ public class AchievementsTests
         ClassUnlock warrior = _unlocks.First(u => u.ClassName == "TestWarrior");
         Assert.False(warrior.Unlocked);
         Assert.Equal(1, warrior.ObtainedCount);
-        Assert.Equal(3, warrior.TotalCount);
+        Assert.Equal(4, warrior.TotalCount);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class AchievementsTests
     {
         ClassUnlock warrior = _unlocks.First(u => u.ClassName == "TestWarrior");
         HashSet<string?> names = [.. warrior.Items.Select(i => i.ItemName)];
-        Assert.Equal(new HashSet<string?> { "Belt of the Four Winds", "Dagas", "Fangol and Spirit Blade" }, names);
+        Assert.Equal(new HashSet<string?> { "Belt of the Four Winds", "Dagas", "Fangol and Spirit Blade", "Test Cross Item" }, names);
     }
 
     [Fact]

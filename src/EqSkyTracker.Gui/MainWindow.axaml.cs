@@ -220,7 +220,6 @@ public partial class MainWindow : Window
         SetDetailText("Select an item below for its full pickup details.");
 
         var rootNodes = new List<TreeNode>();
-        var missingRows = new List<MissingItemRow>();
 
         if (report.FarmedItems.Count > 0)
         {
@@ -254,14 +253,9 @@ public partial class MainWindow : Window
             var classNode = new TreeNode(cls.ClassName, status, "", cls.Unlocked ? GreenBrush : DefaultBrush);
             foreach (ItemStatus item in cls.Items)
             {
-                (string itemStatus, string source, string detail) = DescribeItem(item);
+                (string itemStatus, string detail) = DescribeItem(item);
                 IBrush color = item.Complete ? GreenBrush : AmberBrush;
                 classNode.Children.Add(new TreeNode("   " + item.Name, itemStatus, detail, color));
-
-                if (!item.Complete)
-                {
-                    missingRows.Add(new MissingItemRow(item.Name, cls.ClassName, itemStatus, source, detail));
-                }
             }
             rootNodes.Add(classNode);
         }
@@ -273,23 +267,35 @@ public partial class MainWindow : Window
         }
 
         _classTree.ItemsSource = rootNodes;
-        _missingGrid.ItemsSource = missingRows;
+        _missingGrid.ItemsSource = BuildMissingRows(report);
     }
 
     /// <summary>
-    /// Returns (status text, source/drop-location tag, full detail text) for
-    /// a single item, shared by the by-class tree and the unified
-    /// missing-items list so the two views never disagree.
+    /// Builds the "All Missing Items" grid rows from the report's
+    /// deduplicated turn-in components, using the same green/red
+    /// have-it-vs-still-need coloring as the "Farmed items" tree node.
     /// </summary>
-    private static (string Status, string Source, string Detail) DescribeItem(ItemStatus item)
+    private static List<MissingItemRow> BuildMissingRows(CharacterReport report) =>
+    [
+        .. report.MissingComponents.Select(c =>
+        {
+            string inBags = c.InInventory ? "yes" : "no";
+            string detail = $"{c.Name}\nNeeded for: {string.Join(", ", c.NeededFor)}" +
+                             (c.InInventory ? "\nAlready sitting in your bags/bank/keyring." : "");
+            IBrush color = c.InInventory ? GreenBrush : RedBrush;
+            return new MissingItemRow(c.Name, c.Source, string.Join(", ", c.NeededFor), inBags, detail, color);
+        }),
+    ];
+
+    /// <summary>Returns (status text, full detail text) for a single item in the "By Class" tree.</summary>
+    private static (string Status, string Detail) DescribeItem(ItemStatus item)
     {
         if (item.Complete)
         {
-            return ("✓ obtained", "", item.Name);
+            return ("✓ obtained", item.Name);
         }
         var detailLines = new List<string> { item.Name };
         string status = "needed";
-        string source = "";
         if (item.InInventory)
         {
             status += "  (in bags/bank!)";
@@ -298,13 +304,12 @@ public partial class MainWindow : Window
         if (item.Hint is { Found: true, HowToObtain: { } howToObtain })
         {
             detailLines.Add(howToObtain);
-            source = string.Join(", ", Components.ExtractIslandTags(howToObtain));
         }
         else if (item.Hint is null)
         {
             detailLines.Add("No pickup hint available for this item yet.");
         }
-        return (status, source, string.Join("\n", detailLines));
+        return (status, string.Join("\n", detailLines));
     }
 
     private void OnClassTreeSelectionChanged(object? sender, SelectionChangedEventArgs e)

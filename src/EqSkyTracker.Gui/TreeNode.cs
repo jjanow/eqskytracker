@@ -32,12 +32,14 @@ public class TreeNode(string name, string status, string detail, IBrush foregrou
     public event PropertyChangedEventHandler? PropertyChanged;
 }
 
-/// <summary>A single row in the "All Missing Items" grid.</summary>
-public class MissingItemRow(string item, string className, string status, string source, string detail)
+/// <summary>A single row in the "All Missing Items" grid -- a turn-in
+/// component still needed by at least one incomplete class-unlock reward.</summary>
+public class MissingItemRow(string item, string source, string neededFor, string inBags, string detail, IBrush foreground)
 {
     public string Item { get; } = item;
-    public string ClassName { get; } = className;
-    public string Status { get; } = status;
     public string Source { get; } = source;
+    public string NeededFor { get; } = neededFor;
+    public string InBags { get; } = inBags;
     public string Detail { get; } = detail;
+    public IBrush Foreground { get; } = foreground;
 }

@@ -8,6 +8,7 @@ I	Primary Class Unlock - TestWarrior
 C		Obtain Belt of the Four Winds.
 I		Obtain Dagas.
 I		Obtain Fangol and Spirit Blade
+I		Obtain Test Cross Item
 I		This achievement will autocomplete if you chose to confirm your Primary Class as a TestWarrior.
 I		This achievement can be bypassed using a Primary Class Unlock Token.
 General: Keys

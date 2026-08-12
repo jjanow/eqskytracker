@@ -29,7 +29,18 @@ public static partial class Components
     /// stripped) from a hint's how_to_obtain text. Returns [] if the text
     /// doesn't match the expected sentence shape.
     /// </summary>
-    public static List<string> ParseComponents(string howToObtain)
+    public static List<string> ParseComponents(string howToObtain) =>
+        [.. ParseComponentsWithTags(howToObtain).Select(c => c.Name)];
+
+    /// <summary>
+    /// Extract turn-in components from a hint's how_to_obtain text, pairing
+    /// each item name with its own island-tag parenthetical (e.g. 'Sphinx
+    /// Claw' -> "7-SotS"). Components without a tag in the text (e.g. Wind
+    /// Runes and NPC-purchased items) come back with a null tag -- that's
+    /// expected, not an error. Returns [] if the text doesn't match the
+    /// expected sentence shape.
+    /// </summary>
+    public static List<(string Name, string? Tag)> ParseComponentsWithTags(string howToObtain)
     {
         Match m = HowToObtainRegex().Match(howToObtain);
         if (!m.Success)
@@ -52,20 +63,20 @@ public static partial class Components
             windRune = null;
         }
 
-        var names = listed.Split(", ").Select(n => TagSuffixRegex().Replace(n, "").Trim()).ToList();
+        var components = listed.Split(", ").Select(ParseNameAndTag).ToList();
         if (windRune is not null)
         {
-            names.Add(windRune.Trim());
+            components.Add(ParseNameAndTag(windRune));
         }
-        return names.Where(n => n.Length > 0).ToList();
+        return components.Where(c => c.Name.Length > 0).ToList();
     }
 
-    /// <summary>
-    /// Pull the island-tag parentheticals (e.g. '7-SotS' from 'Sphinx Claw
-    /// (7-SotS)') out of a hint's how_to_obtain text, in the order they appear.
-    /// Not every component names a tag (e.g. Wind Runes never do), so this can
-    /// return fewer tags than components -- that's expected, not an error.
-    /// </summary>
-    public static List<string> ExtractIslandTags(string howToObtain) =>
-        IslandTagRegex().Matches(howToObtain).Select(m => m.Groups[1].Value).ToList();
+    private static (string Name, string? Tag) ParseNameAndTag(string raw)
+    {
+        raw = raw.Trim();
+        Match tagMatch = IslandTagRegex().Match(raw);
+        string? tag = tagMatch.Success ? tagMatch.Groups[1].Value : null;
+        string name = TagSuffixRegex().Replace(raw, "").Trim();
+        return (name, tag);
+    }
 }

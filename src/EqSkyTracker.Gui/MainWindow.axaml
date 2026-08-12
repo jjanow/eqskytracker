@@ -50,10 +50,34 @@
                 <DataGrid Name="MissingGrid" AutoGenerateColumns="False" IsReadOnly="True"
                           CanUserSortColumns="True" GridLinesVisibility="Horizontal">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Item" Binding="{Binding Item}" Width="2*" />
-                        <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="*" />
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="1.2*" />
-                        <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="1.2*" />
+                        <DataGridTemplateColumn Header="Item" SortMemberPath="Item" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Item}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Source" SortMemberPath="Source" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Source}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Needed For" SortMemberPath="NeededFor" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding NeededFor}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="In Bags?" SortMemberPath="InBags" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding InBags}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

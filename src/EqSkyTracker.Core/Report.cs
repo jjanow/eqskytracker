@@ -26,6 +26,23 @@ public class FarmedItemStatus
     public bool SafeToSell => NeededFor.Count == 0;
 }
 
+/// <summary>
+/// A turn-in component still needed by at least one incomplete class-unlock
+/// reward, deduplicated across every reward that names it.
+/// </summary>
+public class MissingComponentStatus
+{
+    public required string Name { get; init; }
+
+    /// <summary>Island tag as the wiki shows it (e.g. "7-SotS"); "" if the component has none.</summary>
+    public required string Source { get; init; }
+
+    /// <summary>Reward item names still incomplete that need this component.</summary>
+    public required List<string> NeededFor { get; init; }
+
+    public required bool InInventory { get; init; }
+}
+
 public class ClassReport
 {
     public required string ClassName { get; init; }
@@ -41,6 +58,7 @@ public class CharacterReport
     public required string CharacterName { get; init; }
     public required List<ClassReport> Classes { get; init; }
     public List<FarmedItemStatus> FarmedItems { get; init; } = [];
+    public List<MissingComponentStatus> MissingComponents { get; init; } = [];
 
     public int UnlockedCount => Classes.Count(c => c.Unlocked);
     public int TotalClasses => Classes.Count;
@@ -107,13 +125,64 @@ public static class Report
         }
 
         List<FarmedItemStatus> farmedItems = inventory is not null ? FarmedItemStatuses(inventory, classes) : [];
+        List<MissingComponentStatus> missingComponents = MissingComponentStatuses(classes, inventory);
 
         return new CharacterReport
         {
             CharacterName = CharacterName(achievementsPath),
             Classes = classes,
             FarmedItems = farmedItems,
+            MissingComponents = missingComponents,
         };
+    }
+
+    /// <summary>
+    /// Build the deduplicated list of turn-in components still needed by any
+    /// incomplete class-unlock reward -- the "All Missing Items" tab's data
+    /// source. A component named by more than one incomplete reward
+    /// collapses to a single row listing every consumer.
+    /// </summary>
+    private static List<MissingComponentStatus> MissingComponentStatuses(List<ClassReport> classes, Inventory? inventory)
+    {
+        var components = new Dictionary<string, (string Name, string? Tag, List<string> Consumers)>(StringComparer.OrdinalIgnoreCase);
+        foreach (ClassReport cls in classes)
+        {
+            foreach (ItemStatus item in cls.Items)
+            {
+                if (item.Complete || item.Hint?.HowToObtain is not { } howToObtain)
+                {
+                    continue;
+                }
+                foreach ((string name, string? tag) in Components.ParseComponentsWithTags(howToObtain))
+                {
+                    if (!components.TryGetValue(name, out (string Name, string? Tag, List<string> Consumers) entry))
+                    {
+                        entry = (name, tag, []);
+                    }
+                    else if (entry.Tag is null && tag is not null)
+                    {
+                        entry = (entry.Name, tag, entry.Consumers);
+                    }
+                    entry.Consumers.Add(item.Name);
+                    components[name] = entry;
+                }
+            }
+        }
+
+        var statuses = new List<MissingComponentStatus>();
+        foreach ((string name, string? tag, List<string> consumers) in components.Values)
+        {
+            List<string> neededFor = [.. consumers.Distinct(StringComparer.Ordinal).OrderBy(n => n, StringComparer.Ordinal)];
+            statuses.Add(new MissingComponentStatus
+            {
+                Name = name,
+                Source = tag ?? "",
+                NeededFor = neededFor,
+                InInventory = inventory is not null && inventory.HasItem(name),
+            });
+        }
+        statuses.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
+        return statuses;
     }
 
     /// <summary>

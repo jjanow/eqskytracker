@@ -100,4 +100,55 @@ public class ReportTests
         CharacterReport report = Report.BuildReport(Achievements, hintsPath: HintsPath);
         Assert.Empty(report.FarmedItems);
     }
+
+    [Fact]
+    public void MissingComponentCarriesItsIslandTagAndInventoryStatus()
+    {
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        MissingComponentStatus blade = report.MissingComponents.First(c => c.Name == "Djinni War Blade");
+        Assert.Equal("7-SotS", blade.Source);
+        Assert.True(blade.InInventory);
+        Assert.Equal(["Fangol and Spirit Blade"], blade.NeededFor);
+    }
+
+    [Fact]
+    public void ComponentWithNoTagComesBackBlank()
+    {
+        // "Wind Rune Jaka" is a plus-clause Wind Rune -- it never carries an
+        // island-tag parenthetical in the source text.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        MissingComponentStatus rune = report.MissingComponents.First(c => c.Name == "Wind Rune Jaka");
+        Assert.Equal("", rune.Source);
+    }
+
+    [Fact]
+    public void ComponentSharedByTwoIncompleteRewardsCollapsesToOneRowWithBothConsumers()
+    {
+        // "Gem of Invigoration" is named by both "Fangol and Spirit Blade"
+        // and "Test Cross Item", both still incomplete in the fixture.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        List<MissingComponentStatus> matches = [.. report.MissingComponents.Where(c => c.Name == "Gem of Invigoration")];
+        MissingComponentStatus gem = Assert.Single(matches);
+        Assert.Equal(["Fangol and Spirit Blade", "Test Cross Item"], gem.NeededFor);
+        Assert.False(gem.InInventory); // not present anywhere in the fixture inventory
+    }
+
+    [Fact]
+    public void ComponentDropsOffOnceEveryConsumingRewardIsComplete()
+    {
+        // "Fine Belt Buckle" is only named by "Belt of the Four Winds",
+        // which is already complete in the fixture, so it shouldn't surface
+        // as something still needed.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        Assert.DoesNotContain(report.MissingComponents, c => c.Name == "Fine Belt Buckle");
+    }
+
+    [Fact]
+    public void NoHintMeansItemContributesNoMissingComponents()
+    {
+        // "Dagas" has no hint in the fixture, so it can't contribute
+        // components -- it should simply be omitted, not throw or guess.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        Assert.DoesNotContain(report.MissingComponents, c => c.NeededFor.Contains("Dagas"));
+    }
 }
