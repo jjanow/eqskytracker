@@ -15,14 +15,24 @@ public partial class MainWindow : Window
     private static readonly IBrush AmberBrush = Brush.Parse("#e0b350");
     private static readonly IBrush RedBrush = Brush.Parse("#e08787");
     private static readonly IBrush DefaultBrush = Brush.Parse("#e6e6e6");
+    private static readonly IBrush ReadyRowBrush = Brush.Parse("#4d7ec699");
+    private static readonly IBrush GroupRowBrush = Brush.Parse("#26282b");
+    private static readonly IBrush TransparentBrush = Brushes.Transparent;
+
+    private const string FarmedGroupKey = "__farmed__";
+
+    private enum ClassSortColumn { None, Name, Status }
 
     private readonly Button _chooseFolderButton;
     private readonly TextBlock _dirLabel;
     private readonly ComboBox _charCombo;
     private readonly Button _refreshButton;
     private readonly TextBlock _summaryLabel;
-    private readonly TreeView _classTree;
+    private readonly DataGrid _classGrid;
+    private readonly Button _classNameHeader;
+    private readonly Button _classStatusHeader;
     private readonly DataGrid _missingGrid;
+    private readonly DataGrid _readyGrid;
     private readonly TextBox _detailText;
     private readonly CheckBox _expandClassesCheckBox;
 
@@ -30,6 +40,11 @@ public partial class MainWindow : Window
     private List<Character> _characters = [];
     private CharacterReport? _report;
     private bool _suppressComboSelection;
+    private ClassSortColumn _classSortColumn = ClassSortColumn.None;
+    private bool _classSortAscending = true;
+    private List<(ClassGridRow Group, List<ClassGridRow> Children)> _classGroups = [];
+    private readonly HashSet<string> _collapsedGroups = new(StringComparer.Ordinal);
+    private bool _resetGroupExpansion = true;
 
     public MainWindow() : this(null)
     {
@@ -44,21 +59,29 @@ public partial class MainWindow : Window
         _charCombo = this.FindControl<ComboBox>("CharCombo")!;
         _refreshButton = this.FindControl<Button>("RefreshButton")!;
         _summaryLabel = this.FindControl<TextBlock>("SummaryLabel")!;
-        _classTree = this.FindControl<TreeView>("ClassTree")!;
+        _classGrid = this.FindControl<DataGrid>("ClassGrid")!;
+        _classNameHeader = this.FindControl<Button>("ClassNameHeader")!;
+        _classStatusHeader = this.FindControl<Button>("ClassStatusHeader")!;
         _missingGrid = this.FindControl<DataGrid>("MissingGrid")!;
+        _readyGrid = this.FindControl<DataGrid>("ReadyGrid")!;
         _detailText = this.FindControl<TextBox>("DetailText")!;
         _expandClassesCheckBox = this.FindControl<CheckBox>("ExpandClassesCheckBox")!;
 
         _chooseFolderButton.Click += OnChooseFolderClick;
         _refreshButton.Click += (_, _) => ReloadCharacters();
         _charCombo.SelectionChanged += OnCharComboSelectionChanged;
-        _classTree.SelectionChanged += OnClassTreeSelectionChanged;
+        _classGrid.SelectionChanged += OnClassGridSelectionChanged;
+        _classGrid.CellPointerPressed += OnClassGridCellPointerPressed;
+        _classNameHeader.Click += (_, _) => OnClassGridHeaderClick(ClassSortColumn.Name);
+        _classStatusHeader.Click += (_, _) => OnClassGridHeaderClick(ClassSortColumn.Status);
         _missingGrid.SelectionChanged += OnMissingGridSelectionChanged;
+        _readyGrid.SelectionChanged += OnReadyGridSelectionChanged;
         _expandClassesCheckBox.IsCheckedChanged += OnExpandClassesCheckedChanged;
         Closing += OnClosing;
 
         ApplySavedGeometry();
         _expandClassesCheckBox.IsChecked = Discovery.LoadExpandClassesByDefault();
+        UpdateClassGridHeaderLabels();
 
         _currentDir = initialDir;
         ReloadCharacters();
@@ -164,8 +187,9 @@ public partial class MainWindow : Window
         {
             _summaryLabel.Text = "No character dumps found. Run '/outputfile achievements' " +
                                   "and '/outputfile inventory' in-game, then choose that folder.";
-            _classTree.ItemsSource = null;
+            _classGrid.ItemsSource = null;
             _missingGrid.ItemsSource = null;
+            _readyGrid.ItemsSource = null;
             SetDetailText("Select an item below for its full pickup details.");
         }
     }
@@ -195,6 +219,7 @@ public partial class MainWindow : Window
             new ErrorDialog("Failed to read dump", ex.Message).ShowDialog(this);
             return;
         }
+        _resetGroupExpansion = true;
         RenderReport();
     }
 
@@ -203,12 +228,10 @@ public partial class MainWindow : Window
     {
         bool expand = _expandClassesCheckBox.IsChecked ?? false;
         Discovery.SaveExpandClassesByDefault(expand);
-        if (_classTree.ItemsSource is IEnumerable<TreeNode> nodes)
+        _resetGroupExpansion = true;
+        if (_report is not null)
         {
-            foreach (TreeNode node in nodes)
-            {
-                node.IsExpanded = expand;
-            }
+            RenderReport();
         }
     }
 
@@ -220,11 +243,12 @@ public partial class MainWindow : Window
                               $"({report.UnlockedCount} classes unlocked)";
         SetDetailText("Select an item below for its full pickup details.");
 
-        var rootNodes = new List<TreeNode>();
+        var groups = new List<(ClassGridRow Group, List<ClassGridRow> Children)>();
 
         if (report.FarmedItems.Count > 0)
         {
-            var farmedNode = new TreeNode("Farmed items (Sky turn-ins)", "", "", DefaultBrush);
+            var farmedGroup = new ClassGridRow("Farmed items (Sky turn-ins)", "", "", DefaultBrush, GroupRowBrush, true, FarmedGroupKey) { IsPinned = true };
+            var farmedChildren = new List<ClassGridRow>();
             foreach (FarmedItemStatus f in report.FarmedItems)
             {
                 string where = string.Join(", ", f.Locations);
@@ -243,33 +267,121 @@ public partial class MainWindow : Window
                     detail = $"Needed for: {string.Join(", ", f.NeededFor)}\n{where}";
                     color = RedBrush;
                 }
-                farmedNode.Children.Add(new TreeNode($"   {f.Name} x{f.Count}", status, detail, color));
+                farmedChildren.Add(new ClassGridRow($"   {f.Name} x{f.Count}", status, detail, color, TransparentBrush, false, FarmedGroupKey));
             }
-            rootNodes.Add(farmedNode);
+            groups.Add((farmedGroup, farmedChildren));
         }
 
         foreach (ClassReport cls in report.Classes.OrderBy(c => c.RewardComplete).ThenBy(c => c.ClassName, StringComparer.Ordinal))
         {
             (string status, IBrush classColor) = DescribeClass(cls);
-            var classNode = new TreeNode(cls.ClassName, status, "", classColor);
+            var classGroup = new ClassGridRow(cls.ClassName, status, "", classColor, GroupRowBrush, true, cls.ClassName);
+            var children = new List<ClassGridRow>();
             foreach (ItemStatus item in cls.Items)
             {
                 (string itemStatus, string detail) = DescribeItem(item, cls.VerifiedFromInventory);
                 IBrush color = item.Complete ? GreenBrush : AmberBrush;
-                classNode.Children.Add(new TreeNode("   " + item.Name, itemStatus, detail, color));
+                bool readyToTurnIn = !item.Complete && item.Readiness is { AllTrackableComponentsPresent: true };
+                IBrush background = readyToTurnIn ? ReadyRowBrush : TransparentBrush;
+                children.Add(new ClassGridRow("   " + item.Name, itemStatus, detail, color, background, false, cls.ClassName));
             }
-            rootNodes.Add(classNode);
+            groups.Add((classGroup, children));
         }
 
-        bool expand = _expandClassesCheckBox.IsChecked ?? false;
-        foreach (TreeNode node in rootNodes)
+        _classGroups = groups;
+        SortClassGroups();
+
+        if (_resetGroupExpansion)
         {
-            node.IsExpanded = expand;
+            bool expand = _expandClassesCheckBox.IsChecked ?? false;
+            _collapsedGroups.Clear();
+            if (!expand)
+            {
+                foreach ((ClassGridRow group, _) in _classGroups)
+                {
+                    _collapsedGroups.Add(group.GroupKey);
+                }
+            }
+            _resetGroupExpansion = false;
         }
 
-        _classTree.ItemsSource = rootNodes;
+        RefreshClassGridRows();
         _missingGrid.ItemsSource = BuildMissingRows(report);
+        _readyGrid.ItemsSource = BuildReadyRows(report);
     }
+
+    /// <summary>
+    /// Sorts the "By Class" grid's cached groups by the active header-clicked
+    /// column, keeping the pinned "Farmed items" group first. No-op when no
+    /// column is active, preserving the default reward-complete/class-name
+    /// build order.
+    /// </summary>
+    private void SortClassGroups()
+    {
+        if (_classSortColumn == ClassSortColumn.None)
+        {
+            return;
+        }
+
+        int Compare(ClassGridRow a, ClassGridRow b)
+        {
+            string x = _classSortColumn == ClassSortColumn.Name ? a.Name.TrimStart() : a.Status;
+            string y = _classSortColumn == ClassSortColumn.Name ? b.Name.TrimStart() : b.Status;
+            int cmp = string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
+            return _classSortAscending ? cmp : -cmp;
+        }
+
+        List<(ClassGridRow Group, List<ClassGridRow> Children)> pinned = [.. _classGroups.Where(g => g.Group.IsPinned)];
+        List<(ClassGridRow Group, List<ClassGridRow> Children)> rest = [.. _classGroups.Where(g => !g.Group.IsPinned)];
+        rest.Sort((a, b) => Compare(a.Group, b.Group));
+        _classGroups = [.. pinned, .. rest];
+
+        foreach ((_, List<ClassGridRow> children) in _classGroups)
+        {
+            children.Sort(Compare);
+        }
+    }
+
+    /// <summary>Flattens the cached groups into the grid's visible row list, skipping children of a collapsed group.</summary>
+    private void RefreshClassGridRows()
+    {
+        var visible = new List<ClassGridRow>();
+        foreach ((ClassGridRow group, List<ClassGridRow> children) in _classGroups)
+        {
+            bool collapsed = _collapsedGroups.Contains(group.GroupKey);
+            group.Name = (collapsed ? "▸ " : "▾ ") + group.BaseName;
+            visible.Add(group);
+            if (!collapsed)
+            {
+                visible.AddRange(children);
+            }
+        }
+        _classGrid.ItemsSource = visible;
+    }
+
+    /// <summary>
+    /// Builds the "Ready to Turn In" grid rows -- still-incomplete class-unlock
+    /// rewards whose trackable turn-in components are all in bags/bank/keyring.
+    /// Wind Rune possession can't be confirmed from a dump, so a reward that
+    /// still needs one is still listed, just distinguished by status/color.
+    /// </summary>
+    private static List<ReadyItemRow> BuildReadyRows(CharacterReport report) =>
+    [
+        .. report.Classes
+            .SelectMany(cls => cls.Items.Select(item => (ClassName: cls.ClassName, Item: item)))
+            .Where(x => !x.Item.Complete && x.Item.Readiness is { AllTrackableComponentsPresent: true })
+            .OrderBy(x => x.ClassName, StringComparer.Ordinal)
+            .ThenBy(x => x.Item.Name, StringComparer.Ordinal)
+            .Select(x =>
+            {
+                TurnInReadiness readiness = x.Item.Readiness!;
+                bool fullyReady = readiness.ReadyToTurnIn;
+                string status = fullyReady ? "✓ Ready to turn in" : "Ready -- confirm Wind Rune in-game";
+                string detail = x.Item.Hint?.HowToObtain ?? x.Item.Name;
+                IBrush color = fullyReady ? GreenBrush : AmberBrush;
+                return new ReadyItemRow(x.ClassName, x.Item.Name, x.Item.Hint?.Npc ?? "", status, detail, color);
+            }),
+    ];
 
     /// <summary>
     /// Builds the "All Missing Items" grid rows from the report's
@@ -354,17 +466,64 @@ public partial class MainWindow : Window
         return (needStatus, string.Join("\n", detailLines));
     }
 
-    private void OnClassTreeSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    // -- "By Class" column sort -------------------------------------------
+    private void OnClassGridHeaderClick(ClassSortColumn column)
     {
-        if (_classTree.SelectedItem is TreeNode node)
+        if (_classSortColumn == column)
         {
-            SetDetailText(node.Detail.Length > 0 ? node.Detail : "(class row -- select an item for details)");
+            _classSortAscending = !_classSortAscending;
+        }
+        else
+        {
+            _classSortColumn = column;
+            _classSortAscending = true;
+        }
+        UpdateClassGridHeaderLabels();
+        if (_report is not null)
+        {
+            RenderReport();
+        }
+    }
+
+    private void UpdateClassGridHeaderLabels()
+    {
+        string arrow = _classSortAscending ? " ▲" : " ▼";
+        _classNameHeader.Content = "Name" + (_classSortColumn == ClassSortColumn.Name ? arrow : "");
+        _classStatusHeader.Content = "Status" + (_classSortColumn == ClassSortColumn.Status ? arrow : "");
+    }
+
+    // -- "By Class" group expand/collapse ---------------------------------
+    private void OnClassGridCellPointerPressed(object? sender, DataGridCellPointerPressedEventArgs e)
+    {
+        if (e.Row?.DataContext is ClassGridRow { IsGroup: true } row)
+        {
+            if (!_collapsedGroups.Add(row.GroupKey))
+            {
+                _collapsedGroups.Remove(row.GroupKey);
+            }
+            RefreshClassGridRows();
+        }
+    }
+
+    private void OnClassGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_classGrid.SelectedItem is ClassGridRow row)
+        {
+            SetDetailText(row.Detail.Length > 0 ? row.Detail : "(class row -- select an item for details)");
         }
     }
 
     private void OnMissingGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (_missingGrid.SelectedItem is MissingItemRow row)
+        {
+            SetDetailText(row.Detail);
+        }
+    }
+
+    private void OnReadyGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_readyGrid.SelectedItem is ReadyItemRow row)
         {
             SetDetailText(row.Detail);
         }

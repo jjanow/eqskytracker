@@ -30,21 +30,40 @@
 
         <TabControl Margin="8,0,8,8">
             <TabItem Header="By Class">
-                <TreeView Name="ClassTree">
-                    <TreeView.Styles>
-                        <Style Selector="TreeViewItem">
-                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                <DataGrid Name="ClassGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="False" CanUserResizeColumns="True" GridLinesVisibility="Horizontal">
+                    <DataGrid.Styles>
+                        <Style Selector="DataGridRow">
+                            <Setter Property="Background" Value="{Binding Background}" />
                         </Style>
-                    </TreeView.Styles>
-                    <TreeView.ItemTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}">
-                            <Grid ColumnDefinitions="*,180">
-                                <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="{Binding Foreground}" />
-                                <TextBlock Grid.Column="1" Text="{Binding Status}" Foreground="{Binding Foreground}" />
-                            </Grid>
-                        </TreeDataTemplate>
-                    </TreeView.ItemTemplate>
-                </TreeView>
+                    </DataGrid.Styles>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="2*">
+                            <DataGridTemplateColumn.Header>
+                                <Button Name="ClassNameHeader" Content="Name"
+                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" />
+                            </DataGridTemplateColumn.Header>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" Foreground="{Binding Foreground}"
+                                               TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="3*">
+                            <DataGridTemplateColumn.Header>
+                                <Button Name="ClassStatusHeader" Content="Status"
+                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" />
+                            </DataGridTemplateColumn.Header>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Status}" Foreground="{Binding Foreground}"
+                                               TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem Header="All Missing Items">
                 <DataGrid Name="MissingGrid" AutoGenerateColumns="False" IsReadOnly="True"
@@ -75,6 +94,41 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding InBags}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Ready to Turn In">
+                <DataGrid Name="ReadyGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="True" CanUserResizeColumns="True" GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Class" SortMemberPath="ClassName" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ClassName}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Item" SortMemberPath="Item" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Item}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Turn In To" SortMemberPath="Npc" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Npc}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Status" SortMemberPath="Status" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Status}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
