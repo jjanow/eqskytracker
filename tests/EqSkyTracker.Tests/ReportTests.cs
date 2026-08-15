@@ -162,6 +162,52 @@ public class ReportTests
     }
 
     [Fact]
+    public void AutoCompletedClassIsVerifiedAgainstInventoryInsteadOfAchievementFlags()
+    {
+        // TestBard was unlocked by confirming Primary Class (not by doing the
+        // quests), so the game's "C" on both "Obtain X." lines is unreliable.
+        // "Mask of Song" sits in the fixture inventory's Equipment/keyring
+        // list, but "Amulet of the Fae" does not -- despite both showing "C"
+        // in the achievements dump.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory);
+        ClassReport bard = report.Classes.First(c => c.ClassName == "TestBard");
+        Assert.True(bard.AutoCompleted);
+        Assert.True(bard.VerifiedFromInventory);
+
+        ItemStatus mask = bard.Items.First(i => i.Name == "Mask of Song");
+        Assert.True(mask.Complete);
+
+        ItemStatus amulet = bard.Items.First(i => i.Name == "Amulet of the Fae");
+        Assert.False(amulet.Complete);
+        Assert.False(bard.RewardComplete);
+    }
+
+    [Fact]
+    public void AutoCompletedClassFallsBackToAchievementFlagsWithoutInventory()
+    {
+        // Without an inventory dump there's nothing to verify against, so
+        // the (unreliable) achievement flags are the best information
+        // available.
+        CharacterReport report = Report.BuildReport(Achievements);
+        ClassReport bard = report.Classes.First(c => c.ClassName == "TestBard");
+        Assert.True(bard.AutoCompleted);
+        Assert.False(bard.VerifiedFromInventory);
+        Assert.True(bard.Items.First(i => i.Name == "Amulet of the Fae").Complete);
+
+        // Regression: every item reading "complete" (from untrustworthy achievement
+        // flags) must NOT be reported as a genuinely complete reward set -- that's
+        // the original false-"done" bug, just reached via the no-inventory path.
+        Assert.False(bard.RewardComplete);
+    }
+
+    [Fact]
+    public void RewardCompleteCountExcludesAutoCompletedClassesWithUnverifiedItems()
+    {
+        CharacterReport report = Report.BuildReport(Achievements, Inventory);
+        Assert.Equal(0, report.RewardCompleteCount);
+    }
+
+    [Fact]
     public void NoHintMeansItemContributesNoMissingComponents()
     {
         // "Dagas" has no hint in the fixture, so it can't contribute

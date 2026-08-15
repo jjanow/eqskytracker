@@ -68,4 +68,23 @@ public class AchievementsTests
     {
         Assert.DoesNotContain(_unlocks, u => u.ClassName == "Islands of Sky Keys");
     }
+
+    [Fact]
+    public void ClassUnlockedByConfirmingPrimaryClassIsFlaggedAutoCompleted()
+    {
+        // TestBard's "will autocomplete if you chose to confirm your Primary
+        // Class" meta-line is "C" -- the game cascades "C" onto every "Obtain
+        // X." sub-requirement in this case even though no quest was done.
+        ClassUnlock bard = _unlocks.First(u => u.ClassName == "TestBard");
+        Assert.True(bard.AutoCompleted);
+    }
+
+    [Fact]
+    public void GenuinelyInProgressClassIsNotFlaggedAutoCompleted()
+    {
+        // TestWarrior has a real mix of complete/incomplete items and both
+        // meta-lines are "I" -- neither shortcut fired.
+        ClassUnlock warrior = _unlocks.First(u => u.ClassName == "TestWarrior");
+        Assert.False(warrior.AutoCompleted);
+    }
 }

@@ -216,7 +216,8 @@ public partial class MainWindow : Window
     private void RenderReport()
     {
         CharacterReport report = _report!;
-        _summaryLabel.Text = $"{report.CharacterName} — {report.UnlockedCount}/{report.TotalClasses} classes unlocked";
+        _summaryLabel.Text = $"{report.CharacterName} — {report.RewardCompleteCount}/{report.TotalClasses} reward sets complete " +
+                              $"({report.UnlockedCount} classes unlocked)";
         SetDetailText("Select an item below for its full pickup details.");
 
         var rootNodes = new List<TreeNode>();
@@ -247,13 +248,13 @@ public partial class MainWindow : Window
             rootNodes.Add(farmedNode);
         }
 
-        foreach (ClassReport cls in report.Classes.OrderBy(c => c.Unlocked).ThenBy(c => c.ClassName, StringComparer.Ordinal))
+        foreach (ClassReport cls in report.Classes.OrderBy(c => c.RewardComplete).ThenBy(c => c.ClassName, StringComparer.Ordinal))
         {
-            string status = cls.Unlocked ? "✓ Unlocked" : $"{cls.ObtainedCount}/{cls.TotalCount} items";
-            var classNode = new TreeNode(cls.ClassName, status, "", cls.Unlocked ? GreenBrush : DefaultBrush);
+            (string status, IBrush classColor) = DescribeClass(cls);
+            var classNode = new TreeNode(cls.ClassName, status, "", classColor);
             foreach (ItemStatus item in cls.Items)
             {
-                (string itemStatus, string detail) = DescribeItem(item);
+                (string itemStatus, string detail) = DescribeItem(item, cls.VerifiedFromInventory);
                 IBrush color = item.Complete ? GreenBrush : AmberBrush;
                 classNode.Children.Add(new TreeNode("   " + item.Name, itemStatus, detail, color));
             }
@@ -287,19 +288,42 @@ public partial class MainWindow : Window
         }),
     ];
 
+    /// <summary>Returns (status text, tree color) for a class row, accounting for auto-completed (bypassed) unlocks.</summary>
+    private static (string Status, IBrush Color) DescribeClass(ClassReport cls)
+    {
+        if (cls.RewardComplete)
+        {
+            return ("✓ Unlocked -- rewards complete", GreenBrush);
+        }
+        if (cls.AutoCompleted && !cls.VerifiedFromInventory)
+        {
+            return ($"⚠ Unlocked via shortcut -- add an inventory dump to verify ({cls.ObtainedCount}/{cls.TotalCount} per achievements, unreliable)", AmberBrush);
+        }
+        if (cls.AutoCompleted)
+        {
+            return ($"⚠ Unlocked via shortcut -- {cls.ObtainedCount}/{cls.TotalCount} rewards found in inventory", AmberBrush);
+        }
+        return ($"{cls.ObtainedCount}/{cls.TotalCount} items", DefaultBrush);
+    }
+
     /// <summary>Returns (status text, full detail text) for a single item in the "By Class" tree.</summary>
-    private static (string Status, string Detail) DescribeItem(ItemStatus item)
+    private static (string Status, string Detail) DescribeItem(ItemStatus item, bool verifiedFromInventory)
     {
         if (item.Complete)
         {
-            return ("✓ obtained", item.Name);
+            string status = verifiedFromInventory ? "✓ confirmed in inventory" : "✓ obtained";
+            return (status, item.Name);
         }
         var detailLines = new List<string> { item.Name };
-        string status = "needed";
+        string needStatus = "needed";
         if (item.InInventory)
         {
-            status += "  (in bags/bank!)";
+            needStatus += "  (in bags/bank!)";
             detailLines.Add("Already sitting in your bags/bank/keyring.");
+        }
+        if (verifiedFromInventory)
+        {
+            detailLines.Add("Class was unlocked via shortcut -- not found in bags/bank/keyring/worn slots, so treated as not obtained.");
         }
         if (item.Hint is { Found: true, HowToObtain: { } howToObtain })
         {
@@ -309,7 +333,7 @@ public partial class MainWindow : Window
         {
             detailLines.Add("No pickup hint available for this item yet.");
         }
-        return (status, string.Join("\n", detailLines));
+        return (needStatus, string.Join("\n", detailLines));
     }
 
     private void OnClassTreeSelectionChanged(object? sender, SelectionChangedEventArgs e)

@@ -51,10 +51,30 @@ public class ClassReport
 {
     public required string ClassName { get; init; }
     public required bool Unlocked { get; init; }
+
+    /// <summary>True if this class was unlocked via Primary Class confirmation or an unlock token instead of turning in the quest rewards.</summary>
+    public required bool AutoCompleted { get; init; }
+
+    /// <summary>
+    /// True if <see cref="AutoCompleted"/> is set and an inventory dump was
+    /// supplied, meaning each item's <see cref="ItemStatus.Complete"/> below
+    /// reflects an actual bags/bank/keyring/worn-slot match rather than the
+    /// game's (untrustworthy, for this class) achievement flag.
+    /// </summary>
+    public required bool VerifiedFromInventory { get; init; }
+
     public List<ItemStatus> Items { get; init; } = [];
 
     public int ObtainedCount => Items.Count(i => i.Complete);
     public int TotalCount => Items.Count;
+
+    /// <summary>
+    /// True only when every item is known -- not just counted -- complete.
+    /// For an auto-completed class without an inventory dump to verify
+    /// against, the item flags are the game's untrustworthy "C"s, so this
+    /// stays false rather than reporting a false "done".
+    /// </summary>
+    public bool RewardComplete => ObtainedCount == TotalCount && (!AutoCompleted || VerifiedFromInventory);
 }
 
 public class CharacterReport
@@ -65,6 +85,7 @@ public class CharacterReport
     public List<MissingComponentStatus> MissingComponents { get; init; } = [];
 
     public int UnlockedCount => Classes.Count(c => c.Unlocked);
+    public int RewardCompleteCount => Classes.Count(c => c.RewardComplete);
     public int TotalClasses => Classes.Count;
 }
 
@@ -113,19 +134,32 @@ public static class Report
         var classes = new List<ClassReport>();
         foreach (ClassUnlock cu in unlocks)
         {
+            // For auto-completed classes the game marks every "Obtain X." sub-requirement
+            // complete regardless of whether the player actually has the item, so fall back
+            // to an inventory/keyring/worn-slot match instead of trusting req.Complete.
+            bool verifiedFromInventory = cu.AutoCompleted && inventory is not null;
+
             var items = new List<ItemStatus>();
             foreach (Requirement req in cu.Items)
             {
                 string name = req.ItemName ?? req.Text;
+                bool inInventory = inventory is not null && HasAny(inventory, name);
                 items.Add(new ItemStatus
                 {
                     Name = name,
-                    Complete = req.Complete,
-                    InInventory = inventory is not null && HasAny(inventory, name),
+                    Complete = verifiedFromInventory ? inInventory : req.Complete,
+                    InInventory = inInventory,
                     Hint = hints.GetValueOrDefault(name),
                 });
             }
-            classes.Add(new ClassReport { ClassName = cu.ClassName, Unlocked = cu.Unlocked, Items = items });
+            classes.Add(new ClassReport
+            {
+                ClassName = cu.ClassName,
+                Unlocked = cu.Unlocked,
+                AutoCompleted = cu.AutoCompleted,
+                VerifiedFromInventory = verifiedFromInventory,
+                Items = items,
+            });
         }
 
         List<FarmedItemStatus> farmedItems = inventory is not null ? FarmedItemStatuses(inventory, classes) : [];

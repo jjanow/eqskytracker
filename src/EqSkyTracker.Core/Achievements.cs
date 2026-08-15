@@ -51,6 +51,17 @@ public class ClassUnlock
 {
     public required string ClassName { get; init; }
     public required bool Unlocked { get; init; }
+
+    /// <summary>
+    /// True if this class was unlocked by confirming it as the character's
+    /// Primary Class or by consuming a Primary Class Unlock Token, rather
+    /// than by turning in the actual quest rewards. The game cascades "C"
+    /// onto every "Obtain X." sub-requirement when either shortcut fires, so
+    /// <see cref="Requirement.Complete"/> on this class's items can't be
+    /// trusted as evidence the player actually has the reward.
+    /// </summary>
+    public required bool AutoCompleted { get; init; }
+
     public required List<Requirement> Items { get; init; }
 
     public int ObtainedCount => Items.Count(i => i.Complete);
@@ -100,6 +111,12 @@ public static partial class Achievements
     [GeneratedRegex(@"^Primary Class Unlock - (.+)$")]
     private static partial Regex ClassUnlockRegex();
 
+    [GeneratedRegex(@"^This achievement will autocomplete if you chose to confirm your Primary Class as a .+\.$")]
+    private static partial Regex PrimaryClassAutocompleteRegex();
+
+    [GeneratedRegex(@"^This achievement can be bypassed using a Primary Class Unlock Token\.$")]
+    private static partial Regex PrimaryClassBypassRegex();
+
     /// <summary>Extract the 'Primary Class Unlock - X' achievements as ClassUnlock records.</summary>
     public static List<ClassUnlock> ClassUnlocks(List<Achievement> achievements)
     {
@@ -111,10 +128,13 @@ public static partial class Achievements
             {
                 continue;
             }
+            bool autoCompleted = ach.Requirements.Any(r => r.Complete &&
+                (PrimaryClassAutocompleteRegex().IsMatch(r.Text) || PrimaryClassBypassRegex().IsMatch(r.Text)));
             outList.Add(new ClassUnlock
             {
                 ClassName = m.Groups[1].Value,
                 Unlocked = ach.Complete,
+                AutoCompleted = autoCompleted,
                 Items = ach.ItemRequirements,
             });
         }

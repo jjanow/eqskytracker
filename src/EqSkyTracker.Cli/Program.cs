@@ -18,8 +18,8 @@ public static class Program
           --dir DIR      Folder containing <Character>-Achievements.txt / -Inventory.txt dumps
           --char CHAR    Character name (e.g. Tholi_rivervale). Required if multiple
                          characters' dumps are in the same folder
-          --all          Expand item checklists for fully-unlocked classes too (they're
-                         always listed)
+          --all          Expand item checklists for classes with all rewards confirmed
+                         too (they're always listed)
           --list-chars   List discovered characters and exit
         """;
 
@@ -147,18 +147,24 @@ public static class Program
     private static void PrintReport(CharacterReport report, bool showComplete)
     {
         Console.WriteLine();
-        Console.WriteLine($"{report.CharacterName} -- Plane of Sky class unlocks: {report.UnlockedCount}/{report.TotalClasses}");
+        Console.WriteLine($"{report.CharacterName} -- Plane of Sky reward sets: {report.RewardCompleteCount}/{report.TotalClasses} complete " +
+                           $"({report.UnlockedCount} classes unlocked)");
         Console.WriteLine();
 
-        foreach (ClassReport cls in report.Classes.OrderBy(c => c.Unlocked).ThenBy(c => c.ClassName, StringComparer.Ordinal))
+        foreach (ClassReport cls in report.Classes.OrderBy(c => c.RewardComplete).ThenBy(c => c.ClassName, StringComparer.Ordinal))
         {
-            if (cls.Unlocked && !showComplete)
+            if (cls.RewardComplete && !showComplete)
             {
-                Console.WriteLine($"  [DONE] {cls.ClassName} ({cls.ObtainedCount}/{cls.TotalCount})");
+                Console.WriteLine($"  [{"DONE",-8}] {cls.ClassName} ({cls.ObtainedCount}/{cls.TotalCount})");
                 continue;
             }
-            string mark = cls.Unlocked ? "DONE" : "    ";
-            Console.WriteLine($"  [{mark}] {cls.ClassName} ({cls.ObtainedCount}/{cls.TotalCount})");
+            string mark = cls.RewardComplete ? "DONE" : cls.AutoCompleted ? "SHORTCUT" : "    ";
+            Console.WriteLine($"  [{mark,-8}] {cls.ClassName} ({cls.ObtainedCount}/{cls.TotalCount})");
+            if (cls.AutoCompleted && !cls.VerifiedFromInventory)
+            {
+                Console.WriteLine("            -> unlocked via shortcut; the achievement flags can't be trusted for this class." +
+                                   " Add --dir pointing at a folder with an inventory dump to verify which rewards you actually have.");
+            }
             foreach (ItemStatus item in cls.Items)
             {
                 string box = item.Complete ? "x" : " ";
