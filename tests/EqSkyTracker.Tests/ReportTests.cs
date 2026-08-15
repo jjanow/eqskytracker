@@ -215,4 +215,113 @@ public class ReportTests
         CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
         Assert.DoesNotContain(report.MissingComponents, c => c.NeededFor.Contains("Dagas"));
     }
+
+    [Fact]
+    public void ReadinessIsNullWithoutInventory()
+    {
+        CharacterReport report = Report.BuildReport(Achievements, hintsPath: HintsPath);
+        ClassReport warrior = report.Classes.First(c => c.ClassName == "TestWarrior");
+        ItemStatus compound = warrior.Items.First(i => i.Name == "Fangol and Spirit Blade");
+        Assert.Null(compound.Readiness);
+    }
+
+    [Fact]
+    public void ReadinessIsNullWithoutAHint()
+    {
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        ClassReport warrior = report.Classes.First(c => c.ClassName == "TestWarrior");
+        ItemStatus dagas = warrior.Items.First(i => i.Name == "Dagas");
+        Assert.Null(dagas.Readiness);
+    }
+
+    [Fact]
+    public void ReadinessCountsPresentComponentsAndFlagsWindRuneUnverified()
+    {
+        // "Fangol and Spirit Blade" needs Djinni War Blade (in bags),
+        // Gem of Invigoration (not in bags) plus Wind Rune Jaka (unverifiable).
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        ClassReport warrior = report.Classes.First(c => c.ClassName == "TestWarrior");
+        ItemStatus compound = warrior.Items.First(i => i.Name == "Fangol and Spirit Blade");
+        Assert.NotNull(compound.Readiness);
+        Assert.Equal(1, compound.Readiness.Have);
+        Assert.Equal(2, compound.Readiness.Total);
+        Assert.True(compound.Readiness.NeedsWindRune);
+        Assert.False(compound.Readiness.AllTrackableComponentsPresent);
+        Assert.False(compound.Readiness.ReadyToTurnIn);
+    }
+
+    [Fact]
+    public void ReadyToTurnInOnlyWhenEveryTrackableComponentPresentAndNoWindRuneNeeded()
+    {
+        // "Test Cross Item" needs Gem of Invigoration plus Shiny Trinket --
+        // neither is in the fixture inventory, and there's no Wind Rune clause.
+        CharacterReport report = Report.BuildReport(Achievements, Inventory, HintsPath);
+        ClassReport warrior = report.Classes.First(c => c.ClassName == "TestWarrior");
+        ItemStatus crossItem = warrior.Items.First(i => i.Name == "Test Cross Item");
+        Assert.NotNull(crossItem.Readiness);
+        Assert.Equal(0, crossItem.Readiness.Have);
+        Assert.Equal(2, crossItem.Readiness.Total);
+        Assert.False(crossItem.Readiness.NeedsWindRune);
+        Assert.False(crossItem.Readiness.ReadyToTurnIn);
+    }
+
+    [Fact]
+    public void ReadyToTurnInWhenEveryComponentIsInBagsAndNoWindRuneIsNeeded()
+    {
+        // Isolated fixture set (not the shared sample-* files, since those are
+        // pinned by exact-count assertions elsewhere) covering the one case
+        // the shared fixtures can't: a turn-in with no Wind Rune clause where
+        // every component is already in bags.
+        string dir = Path.Combine(Path.GetTempPath(), "eqskytracker-readiness-" + Guid.NewGuid());
+        Directory.CreateDirectory(dir);
+        try
+        {
+            string achievementsPath = Path.Combine(dir, "ready-Achievements.txt");
+            string inventoryPath = Path.Combine(dir, "ready-Inventory.txt");
+            string hintsPath = Path.Combine(dir, "ready-hints.json");
+
+            File.WriteAllText(achievementsPath, string.Join('\n',
+            [
+                "Untapped Potential: Classes",
+                "I\tPrimary Class Unlock - TestRogue",
+                "I\t\tObtain Cloak of Shadows",
+                "",
+            ]));
+            File.WriteAllText(inventoryPath, string.Join('\n',
+            [
+                "Location\tName\tID\tCount\tSlots",
+                "General 1\tShadow Silk\t20800\t1\t10",
+                "General 2\tObsidian Clasp\t20801\t1\t10",
+                "",
+                "KeyRing\tName\tID",
+                "",
+            ]));
+            File.WriteAllText(hintsPath, """
+                {
+                  "item_sources": {
+                    "Cloak of Shadows": {
+                      "npc": "Test NPC",
+                      "zone_or_island": "Test Zone",
+                      "how_to_obtain": "Turn in Shadow Silk, Obsidian Clasp to Test NPC to complete 'Rogue Test of Stealth' (reward: Cloak of Shadows).",
+                      "found": true
+                    }
+                  }
+                }
+                """);
+
+            CharacterReport report = Report.BuildReport(achievementsPath, inventoryPath, hintsPath);
+            ClassReport rogue = report.Classes.First(c => c.ClassName == "TestRogue");
+            ItemStatus cloak = rogue.Items.First(i => i.Name == "Cloak of Shadows");
+
+            Assert.NotNull(cloak.Readiness);
+            Assert.Equal(2, cloak.Readiness.Have);
+            Assert.Equal(2, cloak.Readiness.Total);
+            Assert.False(cloak.Readiness.NeedsWindRune);
+            Assert.True(cloak.Readiness.ReadyToTurnIn);
+        }
+        finally
+        {
+            Directory.Delete(dir, recursive: true);
+        }
+    }
 }

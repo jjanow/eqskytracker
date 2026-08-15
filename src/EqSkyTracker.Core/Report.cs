@@ -1,12 +1,43 @@
 // Ties achievements + inventory + optional hints into a report the UIs render.
 namespace EqSkyTracker.Core;
 
+/// <summary>
+/// Whether every turn-in component a reward item's hint names is currently
+/// sitting in bags/bank/keyring -- i.e. whether the turn-in can be done right
+/// now. Wind Runes are tracked separately (<see cref="NeedsWindRune"/>)
+/// since they live in an alternate-currency window and never appear in an
+/// inventory dump, so they can't be confirmed one way or the other.
+/// </summary>
+public class TurnInReadiness
+{
+    /// <summary>How many non-Wind-Rune components are currently in bags/bank/keyring.</summary>
+    public required int Have { get; init; }
+
+    /// <summary>Total non-Wind-Rune components this turn-in needs.</summary>
+    public required int Total { get; init; }
+
+    /// <summary>True if the turn-in also needs a Wind Rune, which can't be verified from an inventory dump.</summary>
+    public required bool NeedsWindRune { get; init; }
+
+    public bool AllTrackableComponentsPresent => Have == Total;
+
+    /// <summary>True only when every trackable component is present and no unverifiable Wind Rune is needed.</summary>
+    public bool ReadyToTurnIn => AllTrackableComponentsPresent && !NeedsWindRune;
+}
+
 public class ItemStatus
 {
     public required string Name { get; init; }
     public required bool Complete { get; init; }
     public required bool InInventory { get; init; }
     public required ItemHint? Hint { get; init; }
+
+    /// <summary>
+    /// null if the hint text couldn't be parsed into a component list (no hint,
+    /// or the how_to_obtain sentence doesn't match the "Turn in ..." shape) or
+    /// no inventory dump was supplied to check against.
+    /// </summary>
+    public required TurnInReadiness? Readiness { get; init; }
 }
 
 /// <summary>
@@ -110,6 +141,28 @@ public static class Report
         return false;
     }
 
+    /// <summary>
+    /// Parses a reward item's how_to_obtain sentence into its component list
+    /// and checks each non-Wind-Rune component against the current inventory.
+    /// Returns null if the sentence doesn't match the "Turn in ..." shape
+    /// (nothing to report readiness on).
+    /// </summary>
+    private static TurnInReadiness? ComputeReadiness(Inventory inventory, string howToObtain)
+    {
+        List<(string Name, string? Tag)> components = Components.ParseComponentsWithTags(howToObtain);
+        if (components.Count == 0)
+        {
+            return null;
+        }
+        List<(string Name, string? Tag)> trackable = [.. components.Where(c => !Components.IsWindRune(c.Name))];
+        return new TurnInReadiness
+        {
+            Have = trackable.Count(c => HasAny(inventory, c.Name)),
+            Total = trackable.Count,
+            NeedsWindRune = trackable.Count != components.Count,
+        };
+    }
+
     private static string CharacterName(string achievementsPath)
     {
         string stem = Path.GetFileName(achievementsPath);
@@ -144,12 +197,16 @@ public static class Report
             {
                 string name = req.ItemName ?? req.Text;
                 bool inInventory = inventory is not null && HasAny(inventory, name);
+                ItemHint? hint = hints.GetValueOrDefault(name);
                 items.Add(new ItemStatus
                 {
                     Name = name,
                     Complete = verifiedFromInventory ? inInventory : req.Complete,
                     InInventory = inInventory,
-                    Hint = hints.GetValueOrDefault(name),
+                    Hint = hint,
+                    Readiness = inventory is not null && hint?.HowToObtain is { } howToObtain
+                        ? ComputeReadiness(inventory, howToObtain)
+                        : null,
                 });
             }
             classes.Add(new ClassReport

@@ -333,6 +333,24 @@ public partial class MainWindow : Window
         {
             detailLines.Add("No pickup hint available for this item yet.");
         }
+        if (item.Readiness is { } readiness)
+        {
+            if (readiness.ReadyToTurnIn)
+            {
+                needStatus += "  -- ✓ ready to turn in";
+                detailLines.Add("All turn-in components are in your bags/bank/keyring.");
+            }
+            else if (readiness.AllTrackableComponentsPresent)
+            {
+                needStatus += "  -- components ready, Wind Rune unverified";
+                detailLines.Add("Every trackable component is in your bags/bank/keyring; still need to confirm the Wind Rune in your alternate-currency window.");
+            }
+            else
+            {
+                needStatus += $"  -- {readiness.Have}/{readiness.Total} components in bags";
+                detailLines.Add($"{readiness.Have}/{readiness.Total} turn-in components are in your bags/bank/keyring so far.");
+            }
+        }
         return (needStatus, string.Join("\n", detailLines));
     }
 

@@ -125,8 +125,14 @@ than one character.
   unlocked too (unlocked classes are always listed, just collapsed by
   default in the CLI; the GUI always shows both).
 - For items you still need: a "how to get it" hint when available (turn-in
-  NPC + required components), and a flag if the item is currently sitting
-  in your bags/bank/keyring.
+  NPC + required components), a flag if the item is currently sitting
+  in your bags/bank/keyring, and — when a hint is available and an
+  inventory dump was supplied — a turn-in readiness check: how many of the
+  named components you already have (e.g. "1/2 components in bags"), or
+  "✓ ready to turn in" once you have all of them. A turn-in that also needs
+  a Wind Rune is flagged separately ("components ready, Wind Rune
+  unverified") since Wind Runes live in an alternate-currency window and
+  never show up in an inventory dump.
 - **Farmed items check**: everything in your bags/bank/keyring that
   matches a known Plane of Sky turn-in component is listed as either
   "keep — still needed for `<reward>`" or "safe to sell/destroy" (its

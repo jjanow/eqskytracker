@@ -179,6 +179,21 @@ public static class Program
                     {
                         line += $"\n            -> {howToObtain}";
                     }
+                    if (item.Readiness is { } readiness)
+                    {
+                        if (readiness.ReadyToTurnIn)
+                        {
+                            line += "\n            -> READY TO TURN IN: all components are in your bags/bank/keyring.";
+                        }
+                        else if (readiness.AllTrackableComponentsPresent)
+                        {
+                            line += "\n            -> Components ready; still need to confirm the Wind Rune in your alternate-currency window.";
+                        }
+                        else
+                        {
+                            line += $"\n            -> {readiness.Have}/{readiness.Total} components in bags so far.";
+                        }
+                    }
                 }
                 Console.WriteLine(line);
             }
