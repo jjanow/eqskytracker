@@ -125,6 +125,13 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Rune Needed" SortMemberPath="Rune" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Rune}" Foreground="{Binding Foreground}" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Status" SortMemberPath="Status" Width="2*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

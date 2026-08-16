@@ -19,6 +19,9 @@ public class TurnInReadiness
     /// <summary>True if the turn-in also needs a Wind Rune, which can't be verified from an inventory dump.</summary>
     public required bool NeedsWindRune { get; init; }
 
+    /// <summary>The specific Wind Rune name (e.g. "Wind Rune Izah") this turn-in needs, or null if none.</summary>
+    public required string? WindRuneName { get; init; }
+
     public bool AllTrackableComponentsPresent => Have == Total;
 
     /// <summary>True only when every trackable component is present and no unverifiable Wind Rune is needed.</summary>
@@ -155,11 +158,13 @@ public static class Report
             return null;
         }
         List<(string Name, string? Tag)> trackable = [.. components.Where(c => !Components.IsWindRune(c.Name))];
+        string? windRuneName = components.Find(c => Components.IsWindRune(c.Name)).Name;
         return new TurnInReadiness
         {
             Have = trackable.Count(c => HasAny(inventory, c.Name)),
             Total = trackable.Count,
             NeedsWindRune = trackable.Count != components.Count,
+            WindRuneName = windRuneName,
         };
     }
 

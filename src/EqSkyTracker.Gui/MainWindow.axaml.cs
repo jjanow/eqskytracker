@@ -379,7 +379,7 @@ public partial class MainWindow : Window
                 string status = fullyReady ? "✓ Ready to turn in" : "Ready -- confirm Wind Rune in-game";
                 string detail = x.Item.Hint?.HowToObtain ?? x.Item.Name;
                 IBrush color = fullyReady ? GreenBrush : AmberBrush;
-                return new ReadyItemRow(x.ClassName, x.Item.Name, x.Item.Hint?.Npc ?? "", status, detail, color);
+                return new ReadyItemRow(x.ClassName, x.Item.Name, x.Item.Hint?.Npc ?? "", readiness.WindRuneName ?? "", status, detail, color);
             }),
     ];
 
