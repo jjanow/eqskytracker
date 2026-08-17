@@ -1,0 +1,175 @@
+name: Release
+
+# Publishes EqSkyTracker.Gui for linux-x64 and win-x64 (win-x64 is
+# cross-compiled from this Linux runner -- no Windows runner needed),
+# packs both with Velopack (vpk), and uploads them to a GitHub Release.
+# EqSkyTracker.Cli is intentionally not built here -- it stays a manual,
+# unpackaged single-file tool.
+#
+# Triggered by pushing a tag like `v1.2.3`. The version embedded in the
+# packages (and the release itself) is derived from that tag -- it's the
+# single source of truth, replacing the by-hand --packVersion used during
+# manual spike testing.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  PACK_ID: EqSkyTracker
+  PACK_TITLE: "Plane of Sky Class Tracker"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Derive version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install vpk
+        run: |
+          dotnet tool install -g vpk
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      # AppImage packing needs mksquashfs; it's not on the default runner image.
+      - name: Install squashfs-tools (needed for AppImage packing)
+        run: sudo apt-get update && sudo apt-get install -y squashfs-tools
+
+      # Runners are stateless, so `vpk pack` has nothing to diff against by
+      # default -- every release would ship a full package only, even
+      # though Gui is published as loose multi-file output specifically so
+      # Velopack can produce small deltas. Seed Releases/ with the previous
+      # release's full packages so pack can diff against them. Falls back
+      # to a full-only build (silently) if there's no previous release, or
+      # if a channel's previous package can't be found for any reason --
+      # that's expected for the very first tagged release.
+      - name: Find previous release
+        id: prev
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          prev_tag=$(gh release list --repo "${{ github.repository }}" \
+            --exclude-drafts --exclude-pre-releases \
+            --json tagName --jq "[.[] | select(.tagName != \"$GITHUB_REF_NAME\")][0].tagName // \"\"")
+          echo "tag=$prev_tag" >> "$GITHUB_OUTPUT"
+          if [ -n "$prev_tag" ]; then
+            echo "Will baseline deltas against $prev_tag"
+          else
+            echo "No previous release found -- this release will be full-only"
+          fi
+
+      - name: Fetch previous release packages (delta baseline)
+        if: steps.prev.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p Releases
+          # linux packages are unambiguously named *-linux-full.nupkg.
+          gh release download "${{ steps.prev.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --pattern '*-linux-full.nupkg' --dir Releases --clobber || true
+          # win packages carry no channel infix (*-full.nupkg), which also
+          # matches the linux filename above -- download to a scratch dir
+          # and keep only the file that isn't the linux package.
+          mkdir -p /tmp/prev-win
+          gh release download "${{ steps.prev.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --pattern '*-full.nupkg' --dir /tmp/prev-win --clobber || true
+          find /tmp/prev-win -maxdepth 1 -name '*-full.nupkg' ! -name '*-linux-*' \
+            -exec cp {} Releases/ \;
+
+      - name: Publish Gui for linux-x64
+        run: |
+          dotnet publish src/EqSkyTracker.Gui/EqSkyTracker.Gui.csproj \
+            -c Release -r linux-x64 --self-contained true \
+            -p:DebugType=none \
+            -o publish/linux-x64
+          find publish/linux-x64 -name '*.pdb' -delete
+
+      - name: Publish Gui for win-x64
+        run: |
+          dotnet publish src/EqSkyTracker.Gui/EqSkyTracker.Gui.csproj \
+            -c Release -r win-x64 --self-contained true \
+            -p:DebugType=none \
+            -o publish/win-x64
+          find publish/win-x64 -name '*.pdb' -delete
+
+      # Releases/ may already hold the previous version's full package (see
+      # "Fetch previous release packages" above) -- vpk picks it up
+      # automatically and emits a delta alongside the new full package. It
+      # does not need to be removed afterwards: `vpk upload github` only
+      # uploads what *this* pack invocation produced (tracked in
+      # assets.<channel>.json), not everything sitting in the directory, so
+      # the old baseline file never ends up attached to the new release.
+      - name: Pack linux-x64 (AppImage)
+        run: |
+          vpk pack \
+            --packId "$PACK_ID" \
+            --packTitle "$PACK_TITLE" \
+            --packVersion "${{ steps.version.outputs.version }}" \
+            --packDir publish/linux-x64 \
+            --mainExe EqSkyTracker.Gui \
+            --icon src/EqSkyTracker.Gui/Assets/icon.png \
+            --channel linux \
+            --outputDir Releases
+
+      # The `[win]` directive tells vpk to cross-compile a Windows package
+      # from this Linux runner instead of assuming the pack target matches
+      # the host OS.
+      - name: Pack win-x64
+        run: |
+          vpk "[win]" pack \
+            --packId "$PACK_ID" \
+            --packTitle "$PACK_TITLE" \
+            --packVersion "${{ steps.version.outputs.version }}" \
+            --runtime win-x64 \
+            --packDir publish/win-x64 \
+            --mainExe EqSkyTracker.Gui.exe \
+            --icon src/EqSkyTracker.Gui/Assets/icon.ico \
+            --channel win \
+            --outputDir Releases
+
+      # Two uploads into the same release/tag, one per channel. --merge is
+      # required on both so the second upload doesn't clobber the first
+      # channel's assets; each channel's filenames (RELEASES vs
+      # RELEASES-linux, releases.win.json vs releases.linux.json, etc.) are
+      # already distinct so nothing collides within Releases/. Only the
+      # second (win) upload publishes -- if the linux upload succeeded but
+      # win failed, we want a draft missing win, not a published release
+      # that's missing a whole channel.
+      - name: Upload linux-x64 release assets
+        env:
+          VPK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          vpk upload github \
+            --repoUrl "https://github.com/${{ github.repository }}" \
+            --outputDir Releases \
+            --channel linux \
+            --tag "${{ github.ref_name }}" \
+            --merge true \
+            --publish false
+
+      - name: Upload win-x64 release assets
+        env:
+          VPK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          vpk upload github \
+            --repoUrl "https://github.com/${{ github.repository }}" \
+            --outputDir Releases \
+            --channel win \
+            --tag "${{ github.ref_name }}" \
+            --merge true \
+            --publish true
