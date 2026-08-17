@@ -6,6 +6,7 @@
         x:Class="EqSkyTracker.Gui.MainWindow"
         x:CompileBindings="False"
         Title="Plane of Sky Class Tracker"
+        Icon="avares://EqSkyTracker.Gui/Assets/icon.png"
         Width="900" Height="600">
 
     <DockPanel Margin="0">
