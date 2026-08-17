@@ -22,6 +22,15 @@
             </StackPanel>
         </Border>
 
+        <Border Name="UpdateBanner" DockPanel.Dock="Top" Padding="8" IsVisible="False"
+                Background="{DynamicResource PanelBg}" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderColor}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Name="UpdateBannerText" VerticalAlignment="Center" Text="An update is ready to install." />
+                <Button Name="UpdateRestartButton" Content="Restart Now" Margin="16,0,0,0" />
+                <Button Name="UpdateLaterButton" Content="Later" />
+            </StackPanel>
+        </Border>
+
         <TextBlock Name="SummaryLabel" DockPanel.Dock="Top" FontSize="15" FontWeight="Bold" Padding="8,10" Text="" />
 
         <Border DockPanel.Dock="Bottom" Padding="8" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderColor}">

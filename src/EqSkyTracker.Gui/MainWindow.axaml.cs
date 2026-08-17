@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using EqSkyTracker.Core;
 using Velopack;
 using Velopack.Sources;
@@ -37,7 +38,13 @@ public partial class MainWindow : Window
     private readonly DataGrid _readyGrid;
     private readonly TextBox _detailText;
     private readonly CheckBox _expandClassesCheckBox;
+    private readonly Border _updateBanner;
+    private readonly TextBlock _updateBannerText;
+    private readonly Button _updateRestartButton;
+    private readonly Button _updateLaterButton;
 
+    private UpdateManager? _updateManager;
+    private UpdateInfo? _pendingUpdate;
     private string? _currentDir;
     private List<Character> _characters = [];
     private CharacterReport? _report;
@@ -68,6 +75,10 @@ public partial class MainWindow : Window
         _readyGrid = this.FindControl<DataGrid>("ReadyGrid")!;
         _detailText = this.FindControl<TextBox>("DetailText")!;
         _expandClassesCheckBox = this.FindControl<CheckBox>("ExpandClassesCheckBox")!;
+        _updateBanner = this.FindControl<Border>("UpdateBanner")!;
+        _updateBannerText = this.FindControl<TextBlock>("UpdateBannerText")!;
+        _updateRestartButton = this.FindControl<Button>("UpdateRestartButton")!;
+        _updateLaterButton = this.FindControl<Button>("UpdateLaterButton")!;
 
         _chooseFolderButton.Click += OnChooseFolderClick;
         _refreshButton.Click += (_, _) => ReloadCharacters();
@@ -79,6 +90,8 @@ public partial class MainWindow : Window
         _missingGrid.SelectionChanged += OnMissingGridSelectionChanged;
         _readyGrid.SelectionChanged += OnReadyGridSelectionChanged;
         _expandClassesCheckBox.IsCheckedChanged += OnExpandClassesCheckedChanged;
+        _updateRestartButton.Click += OnUpdateRestartClick;
+        _updateLaterButton.Click += OnUpdateLaterClick;
         Closing += OnClosing;
 
         ApplySavedGeometry();
@@ -92,12 +105,13 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Spike-level update check: silently looks for a newer GitHub release and
-    /// applies it on next restart. No-op outside a Velopack-installed copy (e.g.
-    /// `dotnet run`), and any failure (offline, no releases yet) is swallowed --
-    /// update availability must never block the app from being usable.
+    /// Looks for a newer GitHub release and, once downloaded, shows the update
+    /// banner rather than restarting unannounced. No-op outside a
+    /// Velopack-installed copy (e.g. `dotnet run`), and any failure (offline,
+    /// no releases yet) is swallowed -- update availability must never block
+    /// the app from being usable.
     /// </summary>
-    private static async Task CheckForUpdatesAsync()
+    private async Task CheckForUpdatesAsync()
     {
         var mgr = new UpdateManager(new GithubSource("https://github.com/jjanow/eqskytracker", null, false));
         if (!mgr.IsInstalled)
@@ -112,13 +126,37 @@ public partial class MainWindow : Window
                 return;
             }
             await mgr.DownloadUpdatesAsync(updates);
-            mgr.ApplyUpdatesAndRestart(updates.TargetFullRelease);
+            _updateManager = mgr;
+            _pendingUpdate = updates;
+            Dispatcher.UIThread.Post(() =>
+            {
+                _updateBannerText.Text = $"Version {updates.TargetFullRelease.Version} is ready to install.";
+                _updateBanner.IsVisible = true;
+            });
         }
         catch (Exception)
         {
             // Offline, rate-limited, or no releases published yet -- not fatal.
         }
     }
+
+    private void OnUpdateRestartClick(object? sender, RoutedEventArgs e)
+    {
+        if (_updateManager is null || _pendingUpdate is null)
+        {
+            return;
+        }
+        SaveGeometry();
+        _updateManager.ApplyUpdatesAndRestart(_pendingUpdate.TargetFullRelease);
+    }
+
+    /// <summary>
+    /// Dismisses the banner without applying anything. The update stays
+    /// downloaded and gets re-offered on the next launch's check --
+    /// WaitExitThenApplyUpdates was considered but its updater only waits
+    /// 60s for process exit, which doesn't fit an indefinite "later".
+    /// </summary>
+    private void OnUpdateLaterClick(object? sender, RoutedEventArgs e) => _updateBanner.IsVisible = false;
 
     private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 
@@ -147,7 +185,9 @@ public partial class MainWindow : Window
         Height = 600;
     }
 
-    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    private void OnClosing(object? sender, WindowClosingEventArgs e) => SaveGeometry();
+
+    private void SaveGeometry()
     {
         if (WindowState == WindowState.Normal)
         {
