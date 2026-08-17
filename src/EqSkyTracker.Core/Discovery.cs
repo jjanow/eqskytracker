@@ -38,12 +38,36 @@ public class DefaultDiscoveryEnvironment : IDiscoveryEnvironment
 {
     public string HomeDirectory => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-    // The app's own install/publish directory -- config.json lives alongside
-    // the executable rather than under the user's home/profile, so the app
-    // stays self-contained and portable (e.g. on a USB stick or a shared
-    // machine). AppContext.BaseDirectory (not Assembly.Location, which is
-    // empty under single-file publish) resolves correctly either way.
-    public string ConfigDirectory => AppContext.BaseDirectory;
+    // Per-user, OS-conventional config location -- NOT next to the
+    // executable. An installed/auto-updated app's install directory is
+    // replaced wholesale on every update (and may not even be writable by
+    // the current user, e.g. a system-wide install), so config.json must
+    // live somewhere that survives an update: %APPDATA% on Windows,
+    // ~/Library/Application Support on macOS, and $XDG_CONFIG_HOME (or
+    // ~/.config) on Linux. Deliberately not Environment.SpecialFolder
+    // .ApplicationData -- .NET maps that to ~/.config on macOS too, not the
+    // native ~/Library/Application Support path.
+    public string ConfigDirectory
+    {
+        get
+        {
+            const string appName = "EqSkyTracker";
+            if (OperatingSystem.IsWindows())
+            {
+                string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                return Path.Combine(appData, appName);
+            }
+            if (OperatingSystem.IsMacOS())
+            {
+                return Path.Combine(HomeDirectory, "Library", "Application Support", appName);
+            }
+            string? xdgConfigHome = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME");
+            string configHome = string.IsNullOrEmpty(xdgConfigHome)
+                ? Path.Combine(HomeDirectory, ".config")
+                : xdgConfigHome;
+            return Path.Combine(configHome, appName);
+        }
+    }
 
     public bool IsWindows => OperatingSystem.IsWindows();
     public string? GetEnvironmentVariable(string name) => Environment.GetEnvironmentVariable(name);
