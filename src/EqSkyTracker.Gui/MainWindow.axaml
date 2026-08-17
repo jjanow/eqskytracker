@@ -135,6 +135,14 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Turn-In Items" SortMemberPath="Components" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Components}" Foreground="{Binding Foreground}"
+                                               TextWrapping="Wrap" VerticalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Rune Needed" SortMemberPath="Rune" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

@@ -44,11 +44,14 @@ public class MissingItemRow(string item, string source, string neededFor, string
 /// <summary>A single row in the "Ready to Turn In" grid -- a still-incomplete
 /// class-unlock reward whose trackable turn-in components are all in
 /// bags/bank/keyring (Wind Rune possession can't be confirmed from a dump).</summary>
-public class ReadyItemRow(string className, string item, string npc, string rune, string status, string detail, IBrush foreground)
+public class ReadyItemRow(string className, string item, string npc, string components, string rune, string status, string detail, IBrush foreground)
 {
     public string ClassName { get; } = className;
     public string Item { get; } = item;
     public string Npc { get; } = npc;
+
+    /// <summary>The non-Wind-Rune components handed over for this turn-in (e.g. "Sphinx Claw, Efreeti War Axe").</summary>
+    public string Components { get; } = components;
 
     /// <summary>The Wind Rune this turn-in needs (e.g. "Wind Rune Izah"), or "" if none.</summary>
     public string Rune { get; } = rune;

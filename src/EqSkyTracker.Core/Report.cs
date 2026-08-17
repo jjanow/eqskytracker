@@ -16,6 +16,9 @@ public class TurnInReadiness
     /// <summary>Total non-Wind-Rune components this turn-in needs.</summary>
     public required int Total { get; init; }
 
+    /// <summary>The non-Wind-Rune component item names this turn-in needs (e.g. "Sphinx Claw").</summary>
+    public required List<string> ComponentNames { get; init; }
+
     /// <summary>True if the turn-in also needs a Wind Rune, which can't be verified from an inventory dump.</summary>
     public required bool NeedsWindRune { get; init; }
 
@@ -165,6 +168,7 @@ public static class Report
             Total = trackable.Count,
             NeedsWindRune = trackable.Count != components.Count,
             WindRuneName = windRuneName,
+            ComponentNames = [.. trackable.Select(c => c.Name)],
         };
     }
 
