@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# Builds self-contained, single-file executables that run on a target
-# machine with nothing pre-installed -- no .NET runtime, no Python. Each
-# output folder under publish/<rid>/ is a complete, portable copy of the app;
-# zip it up and hand it to someone, or copy it to a USB stick.
+# Builds self-contained executables that run on a target machine with
+# nothing pre-installed -- no .NET runtime, no Python. Each output folder
+# under publish/<rid>/ is a complete, portable copy of the app; zip it up
+# and hand it to someone, or copy it to a USB stick.
+#
+# The Cli build is single-file (one executable, easy to hand someone
+# directly). The Gui build is left as loose multi-file output instead: it's
+# packaged for distribution with Velopack, whose delta updates work by
+# diffing individual files between releases -- bundling everything into one
+# file would collapse that into a single, mostly-unmatchable blob and defeat
+# delta updates almost entirely.
 #
 # Usage: ./publish.sh [runtime-id ...]
 #   Defaults to win-x64, linux-x64, and osx-arm64 if none are given.
@@ -19,9 +26,13 @@ for rid in "${rids[@]}"; do
     for proj in EqSkyTracker.Gui EqSkyTracker.Cli; do
         out="publish/$rid/$proj"
         echo "Publishing $proj for $rid -> $out"
+        single_file_args=()
+        if [ "$proj" = "EqSkyTracker.Cli" ]; then
+            single_file_args=(-p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true)
+        fi
         dotnet publish "src/$proj/$proj.csproj" \
             -c Release -r "$rid" --self-contained true \
-            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true \
+            "${single_file_args[@]}" \
             -p:DebugType=none \
             -o "$out"
         # .NET's own debug symbols are already suppressed by DebugType=none

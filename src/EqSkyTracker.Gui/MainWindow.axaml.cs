@@ -6,6 +6,8 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using EqSkyTracker.Core;
+using Velopack;
+using Velopack.Sources;
 
 namespace EqSkyTracker.Gui;
 
@@ -85,6 +87,37 @@ public partial class MainWindow : Window
 
         _currentDir = initialDir;
         ReloadCharacters();
+
+        _ = CheckForUpdatesAsync();
+    }
+
+    /// <summary>
+    /// Spike-level update check: silently looks for a newer GitHub release and
+    /// applies it on next restart. No-op outside a Velopack-installed copy (e.g.
+    /// `dotnet run`), and any failure (offline, no releases yet) is swallowed --
+    /// update availability must never block the app from being usable.
+    /// </summary>
+    private static async Task CheckForUpdatesAsync()
+    {
+        var mgr = new UpdateManager(new GithubSource("https://github.com/jjanow/eqskytracker", null, false));
+        if (!mgr.IsInstalled)
+        {
+            return;
+        }
+        try
+        {
+            UpdateInfo? updates = await mgr.CheckForUpdatesAsync();
+            if (updates is null)
+            {
+                return;
+            }
+            await mgr.DownloadUpdatesAsync(updates);
+            mgr.ApplyUpdatesAndRestart(updates.TargetFullRelease);
+        }
+        catch (Exception)
+        {
+            // Offline, rate-limited, or no releases published yet -- not fatal.
+        }
     }
 
     private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
