@@ -42,6 +42,7 @@ public partial class MainWindow : Window
     private readonly TextBlock _updateBannerText;
     private readonly Button _updateRestartButton;
     private readonly Button _updateLaterButton;
+    private readonly TextBlock _versionLabel;
 
     private UpdateManager? _updateManager;
     private UpdateInfo? _pendingUpdate;
@@ -79,6 +80,7 @@ public partial class MainWindow : Window
         _updateBannerText = this.FindControl<TextBlock>("UpdateBannerText")!;
         _updateRestartButton = this.FindControl<Button>("UpdateRestartButton")!;
         _updateLaterButton = this.FindControl<Button>("UpdateLaterButton")!;
+        _versionLabel = this.FindControl<TextBlock>("VersionLabel")!;
 
         _chooseFolderButton.Click += OnChooseFolderClick;
         _refreshButton.Click += (_, _) => ReloadCharacters();
@@ -98,6 +100,9 @@ public partial class MainWindow : Window
         _expandClassesCheckBox.IsChecked = Discovery.LoadExpandClassesByDefault();
         UpdateClassGridHeaderLabels();
 
+        _updateManager = new UpdateManager(new GithubSource("https://github.com/jjanow/eqskytracker", null, false));
+        _versionLabel.Text = _updateManager.IsInstalled ? $"v{_updateManager.CurrentVersion}" : "dev build";
+
         _currentDir = initialDir;
         ReloadCharacters();
 
@@ -113,20 +118,18 @@ public partial class MainWindow : Window
     /// </summary>
     private async Task CheckForUpdatesAsync()
     {
-        var mgr = new UpdateManager(new GithubSource("https://github.com/jjanow/eqskytracker", null, false));
-        if (!mgr.IsInstalled)
+        if (_updateManager is null || !_updateManager.IsInstalled)
         {
             return;
         }
         try
         {
-            UpdateInfo? updates = await mgr.CheckForUpdatesAsync();
+            UpdateInfo? updates = await _updateManager.CheckForUpdatesAsync();
             if (updates is null)
             {
                 return;
             }
-            await mgr.DownloadUpdatesAsync(updates);
-            _updateManager = mgr;
+            await _updateManager.DownloadUpdatesAsync(updates);
             _pendingUpdate = updates;
             Dispatcher.UIThread.Post(() =>
             {
